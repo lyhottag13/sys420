@@ -1,0 +1,1 @@
+export const updateParamsAction = object => ({type: "updateParams", object});

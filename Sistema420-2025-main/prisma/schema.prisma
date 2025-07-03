@@ -1,0 +1,327 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model part_test_legacy {
+  pn                          String   @db.NVarChar(15)
+  application                 String   @db.NVarChar(20)
+  revision                    Int
+  revision_datetime           DateTime
+  fixture                     String?  @db.NVarChar(20)
+  air_fixture                 String?  @db.NVarChar(20)
+  nominal_voltage             Int      @db.SmallInt
+  tube_qty_limit              Int?     @db.SmallInt
+  is_shield_installed         Int      @db.SmallInt
+  is_diode_installed          Int      @db.SmallInt
+  contact_1_type              String   @db.NChar(1)
+  contact_2_type              String?  @db.NChar(1)
+  contact_3_type              String?  @db.NChar(1)
+  contact_4_type              String?  @db.NChar(1)
+  atm                         Int      @db.SmallInt
+  atm_max_time                Decimal? @db.Decimal(10, 4)
+  atm_start_frequency         Decimal? @db.Decimal(10, 4)
+  atm_end_frequency           Decimal? @db.Decimal(10, 4)
+  atm_step_frequency          Decimal  @db.Decimal(10, 4)
+  atm_coil_voltage            Decimal? @db.Decimal(10, 4)
+  buz                         Int
+  buz_cycles                  Int?
+  buz_frequency               Int?
+  crs                         Int      @db.SmallInt
+  crs_max_resistance          Decimal? @db.Decimal(10, 4)
+  crs_min_resistance          Decimal? @db.Decimal(10, 4)
+  crs_nom_resistance          Decimal? @db.Decimal(10, 4)
+  crs_tolerance               Decimal? @db.Decimal(10, 4)
+  dio                         Int      @db.SmallInt
+  dcp                         Int      @db.SmallInt
+  dcp_max_peak_to_peak        Decimal? @db.Decimal(10, 4)
+  dcr                         Int      @db.SmallInt
+  dcr_max_peak                Decimal? @db.Decimal(10, 4)
+  dcr_coil_voltage            Decimal? @db.Decimal(10, 4)
+  dcr_start_frequency         Int?
+  dcr_end_frequency           Int?
+  dcr_step_frequency          Int?
+  dcr_start_measurment_window Decimal? @db.Decimal(10, 4)
+  dcr_window_width            Decimal? @db.Decimal(10, 4)
+  dcr_sweeps                  Int?
+  fbo                         Int      @db.SmallInt
+  fbo_coil_voltage            Decimal? @db.Decimal(10, 4)
+  fbo_percent_overdrive       Decimal? @db.Decimal(10, 4)
+  fbo_delay                   Decimal? @db.Decimal(9, 6)
+  irs                         Int      @db.SmallInt
+  irs_range                   Decimal? @db.Decimal(10, 4)
+  irs_coil_voltage            Decimal? @db.Decimal(10, 4)
+  irs_delay                   Decimal? @db.Decimal(9, 6)
+  kel                         Int      @db.SmallInt
+  ocu                         Int      @db.SmallInt
+  ocu_max_current             Decimal? @db.Decimal(10, 4)
+  ocu_min_current             Decimal? @db.Decimal(10, 4)
+  otm                         Int      @db.SmallInt
+  otm_max_time                Decimal? @db.Decimal(10, 4)
+  otm_start_frequency         Decimal? @db.Decimal(10, 4)
+  otm_end_frequency           Decimal? @db.Decimal(10, 4)
+  otm_step_frequency          Decimal? @db.Decimal(10, 4)
+  otm_coil_voltage            Decimal? @db.Decimal(10, 4)
+  ovd                         Int      @db.SmallInt
+  ovd_min_differential        Decimal? @db.Decimal(10, 4)
+  ovd_max_differential        Decimal? @db.Decimal(10, 4)
+  ovr                         Int      @db.SmallInt
+  ovr_max_percentage          Decimal? @db.Decimal(10, 4)
+  ovr_min_percentage          Decimal? @db.Decimal(10, 4)
+  ovt                         String   @db.NVarChar(45)
+  ovt_max_voltage             Decimal? @db.Decimal(10, 4)
+  ovt_min_voltage             Decimal? @db.Decimal(10, 4)
+  ovt_delay                   Decimal? @db.Decimal(9, 6)
+  rcu                         Int      @db.SmallInt
+  rcu_max_current             Decimal? @db.Decimal(10, 4)
+  rcu_min_current             Decimal? @db.Decimal(10, 4)
+  rtm                         Int      @db.SmallInt
+  rtm_max_time                Decimal? @db.Decimal(10, 4)
+  rtm_start_frequency         Decimal? @db.Decimal(10, 4)
+  rtm_end_frequency           Decimal? @db.Decimal(10, 4)
+  rtm_step_frequency          Decimal? @db.Decimal(10, 4)
+  rtm_coil_voltage            Decimal? @db.Decimal(10, 4)
+  rvt                         Int      @db.SmallInt
+  rvt_max_voltage             Decimal? @db.Decimal(10, 4)
+  rvt_min_voltage             Decimal? @db.Decimal(10, 4)
+  rvt_delay                   Decimal  @db.Decimal(9, 6)
+  scr                         Int      @db.SmallInt
+  scr_max_resistance          Decimal? @db.Decimal(10, 4)
+  scr_min_resistance          Decimal? @db.Decimal(10, 4)
+  scr_delay                   Decimal? @db.Decimal(9, 6)
+  scs                         Int      @db.SmallInt
+  scs_max_delta               Decimal? @db.Decimal(10, 4)
+  scs_coil_voltage            Decimal? @db.Decimal(10, 4)
+  scs_cycles                  Int?
+  scs_warm_up                 Int?
+  scs_delay                   Decimal? @db.Decimal(9, 6)
+  sho                         Int      @db.SmallInt
+  sho_threshold_resistance    Decimal? @db.Decimal(10, 4)
+  ttm                         Int      @db.SmallInt
+  ttm_min_time                Decimal? @db.Decimal(10, 4)
+
+  @@id([pn, application], map: "PK_part_test_legacy_pn")
+}
+
+model part_test_specifications {
+  pn                          String   @db.NVarChar(15)
+  application                 String   @db.NVarChar(25)
+  revision                    Int
+  revision_datetime           DateTime
+  fixture                     String?  @db.NVarChar(20)
+  air_fixture                 String?  @db.NVarChar(20)
+  nominal_voltage             Decimal  @db.Decimal(5, 3)
+  sort_file                   String?  @db.NVarChar(10)
+  graph_voltage               Decimal? @db.Decimal(6, 0)
+  tube_qty_limit              Int?     @db.SmallInt
+  is_shield_installed         Int      @db.SmallInt
+  is_diode_installed          Int      @db.SmallInt
+  contact_1_type              String   @db.NChar(1)
+  contact_2_type              String?  @db.NChar(1)
+  contact_3_type              String?  @db.NChar(1)
+  contact_4_type              String?  @db.NChar(1)
+  atm                         Int      @db.SmallInt
+  atm_max_time                Decimal? @db.Decimal(10, 4)
+  buz                         Int
+  buz_cycles                  Int?
+  buz_frequency               Int?
+  crs                         Int      @db.SmallInt
+  crs_nom_resistance          Decimal? @db.Decimal(10, 4)
+  crs_tolerance               Decimal? @db.Decimal(10, 4)
+  dio                         Int      @db.SmallInt
+  dcp                         Int      @db.SmallInt
+  dcp_max_peak_to_peak        Decimal? @db.Decimal(10, 4)
+  dcr                         Int      @db.SmallInt
+  dcr_max_peak                Decimal? @db.Decimal(10, 4)
+  dcr_start_measurment_window Decimal? @db.Decimal(10, 4)
+  dcr_start_freq              Int?
+  dcr_stop_freq               Int?
+  dcr_sweep_time              Decimal? @db.Decimal(10, 4)
+  dcr_sweeps                  Int?
+  dcr_window_width            Decimal? @db.Decimal(10, 4)
+  fbo                         Int      @db.SmallInt
+  fbo_percent_overdrive       Decimal? @db.Decimal(10, 4)
+  fbo_delay                   Decimal? @db.Decimal(9, 6)
+  irs                         Int      @db.SmallInt
+  irs_range                   Decimal? @db.Decimal(10, 4)
+  irs_test_voltage            Decimal? @db.Decimal(10, 4)
+  irs_delay                   Decimal? @db.Decimal(9, 6)
+  kel                         Int      @db.SmallInt
+  ocu                         Int      @db.SmallInt
+  ocu_max_current             Decimal? @db.Decimal(10, 4)
+  ocu_min_current             Decimal? @db.Decimal(10, 4)
+  otm                         Int      @db.SmallInt
+  otm_max_time                Decimal? @db.Decimal(10, 4)
+  vtd                         Int      @db.SmallInt
+  vtd_min_differential        Decimal? @db.Decimal(10, 4)
+  vtd_max_differential        Decimal? @db.Decimal(10, 4)
+  vtr                         Int      @db.SmallInt
+  vtr_max_percentage          Decimal? @db.Decimal(10, 4)
+  vtr_min_percentage          Decimal? @db.Decimal(10, 4)
+  ovt                         Int      @db.SmallInt
+  ovt_max_voltage             Decimal? @db.Decimal(10, 4)
+  ovt_min_voltage             Decimal? @db.Decimal(10, 4)
+  ovt_delay                   Decimal? @db.Decimal(9, 6)
+  rcu                         Int      @db.SmallInt
+  rcu_max_current             Decimal? @db.Decimal(10, 4)
+  rcu_min_current             Decimal? @db.Decimal(10, 4)
+  rtm                         Int      @db.SmallInt
+  rtm_max_time                Decimal? @db.Decimal(10, 4)
+  rvt                         Int      @db.SmallInt
+  rvt_max_voltage             Decimal? @db.Decimal(10, 4)
+  rvt_min_voltage             Decimal? @db.Decimal(10, 4)
+  rvt_delay                   Decimal? @db.Decimal(9, 6)
+  scr                         Int      @db.SmallInt
+  scr_max_resistance          Decimal? @db.Decimal(10, 4)
+  scr_min_resistance          Decimal? @db.Decimal(10, 4)
+  scr_delay                   Decimal? @db.Decimal(9, 6)
+  scs                         Int      @db.SmallInt
+  scs_max_delta               Decimal? @db.Decimal(10, 4)
+  scs_coil_voltage            Decimal? @db.Decimal(10, 4)
+  scs_cycles                  Int?
+  scs_warm_up                 Int?
+  scs_delay                   Decimal? @db.Decimal(9, 6)
+  sho                         Int      @db.SmallInt
+  sho_threshold_resistance    Decimal? @db.Decimal(10, 4)
+  ttm                         Int      @db.SmallInt
+  ttm_min_time                Decimal? @db.Decimal(10, 4)
+  bvs                         Int      @db.SmallInt
+  bvs_test_voltage            Decimal? @db.Decimal(4, 0)
+  bvs_hi_lim                  Decimal? @db.Decimal(6, 1)
+  bvs_lo_lim                  Decimal? @db.Decimal(6, 1)
+  bvs_ramp_up                 Decimal? @db.Decimal(4, 1)
+  bvs_dwell_time              Decimal? @db.Decimal(4, 1)
+  bvs_ramp_down               Decimal? @db.Decimal(4, 1)
+  bvs_charge_lo               Decimal? @db.Decimal(4, 1)
+  test                        test[]
+
+  @@id([pn, application], map: "PK_part_test_specifications_pn")
+  @@index([sort_file], map: "Sort_file_idx")
+}
+
+model sort_limits {
+  file_name String   @id(map: "PK_sort_limits_file_name") @db.NVarChar(10)
+  low_limit Decimal? @db.Decimal(6, 3)
+  hi_limit  Decimal? @db.Decimal(6, 3)
+}
+
+model sys_config {
+  variable String    @id(map: "PK_sys_config_variable") @db.NVarChar(128)
+  value    String?   @db.NVarChar(128)
+  set_time DateTime? @default(now(), map: "DF__sys_confi__set_t__3493CFA7") @db.DateTime
+  set_by   String?   @db.NVarChar(128)
+}
+
+model test {
+  id                                Int                                 @id(map: "PK_test_id") @default(autoincrement())
+  pn                                String                              @db.NVarChar(15)
+  application                       String                              @db.NVarChar(25)
+  user                              Int
+  is_standard_test                  Int                                 @default(1, map: "DF__test__is_standar__367C1819") @db.SmallInt
+  type_of_test                      String                              @db.NVarChar(25)
+  revision                          Int
+  job_order                         String?                             @db.NVarChar(20)
+  plt                               String?                             @db.NVarChar(20)
+  datecode                          String?                             @db.NChar(4)
+  lot_number                        String?                             @db.NVarChar(20)
+  start_datetime                    DateTime
+  end_datetime                      DateTime
+  relays_tested                     BigInt
+  relays_passed_420                 Int?
+  relays_failed_420                 Int
+  yield                             Decimal                             @db.Decimal(6, 3)
+  relays_failed_non_420             Int
+  total_quantity                    Int
+  reject_quantity                   Int?
+  final_yield                       Decimal?                            @db.Decimal(6, 3)
+  issue_quantity                    Int
+  issue_yield                       Decimal                             @db.Decimal(6, 3)
+  elapsed_time                      DateTime?                           @db.Time
+  test_time                         DateTime                            @db.Time
+  idle_time                         DateTime                            @db.Time
+  actual_test_rate                  DateTime?                           @db.Time
+  average_test_rate                 DateTime?                           @db.Time
+  part_test_specifications          part_test_specifications            @relation(fields: [pn, application], references: [pn, application], onUpdate: NoAction, map: "part_test_id_application")
+  user_test_userTouser              user                                @relation("test_userTouser", fields: [user], references: [id], onUpdate: NoAction, map: "test$user")
+  test_fails_non_420                test_fails_non_420?
+  test_result                       test_result[]
+  test_result_insulation_resistance test_result_insulation_resistance[]
+
+  @@index([pn, application], map: "part_test_id_idx")
+  @@index([user], map: "user_idx")
+}
+
+model test_fails_non_420 {
+  id                            Int  @id(map: "PK_test_fails_non_420_id") @default(0, map: "DF__test_fails_n__id__40F9A68C")
+  total_failed_non_420          Int  @default(0, map: "DF__test_fail__total__41EDCAC5")
+  failed_mechanical_crack       Int  @default(0, map: "DF__test_fail__faile__42E1EEFE")
+  failed_mechanical_potting     Int  @default(0, map: "DF__test_fail__faile__43D61337")
+  failed_mechanical_plating     Int  @default(0, map: "DF__test_fail__faile__44CA3770")
+  failed_mechanical_stamping    Int  @default(0, map: "DF__test_fail__faile__45BE5BA9")
+  failed_mechanical_trimming    Int  @default(0, map: "DF__test_fail__faile__46B27FE2")
+  failed_mechanical_dimensional Int  @default(0, map: "DF__test_fail__faile__47A6A41B")
+  failed_mechanical_other       Int  @default(0, map: "DF__test_fail__faile__489AC854")
+  failed_electrical_thermal     Int  @default(0, map: "DF__test_fail__faile__498EEC8D")
+  failed_electrical_magnet      Int  @default(0, map: "DF__test_fail__faile__4A8310C6")
+  failed_electrical_resonent    Int  @default(0, map: "DF__test_fail__faile__4B7734FF")
+  failed_electrical_breakdown   Int  @default(0, map: "DF__test_fail__faile__4C6B5938")
+  failed_electrical_timing      Int  @default(0, map: "DF__test_fail__faile__4D5F7D71")
+  failed_electrical_other       Int  @default(0, map: "DF__test_fail__faile__4E53A1AA")
+  test                          test @relation(fields: [id], references: [id], onUpdate: NoAction, map: "test_fails_non_420$Test ID")
+}
+
+model test_result {
+  test_id   Int
+  dut_no    Int      @db.SmallInt
+  test_type String   @db.NChar(3)
+  switch    Int      @db.SmallInt
+  result    String   @db.NVarChar(20)
+  value     Decimal? @db.Decimal(21, 4)
+  test      test     @relation(fields: [test_id], references: [id], onUpdate: NoAction, map: "test_result$test_test_result_id")
+
+  @@id([test_id, dut_no, test_type, switch], map: "PK_test_result_test_id")
+  @@index([test_id], map: "test_test_result_id_idx")
+}
+
+model test_result_insulation_resistance {
+  test_id        Int
+  dut_no         Int      @db.SmallInt
+  coil_value     Decimal? @db.Decimal(17, 0)
+  shield_value   Decimal? @db.Decimal(17, 0)
+  switch1t_value Decimal? @db.Decimal(17, 0)
+  switch1b_value Decimal? @db.Decimal(17, 0)
+  switch2t_value Decimal? @db.Decimal(17, 0)
+  switch2b_value Decimal? @db.Decimal(17, 0)
+  switch3t_value Decimal? @db.Decimal(17, 0)
+  switch3b_value Decimal? @db.Decimal(17, 0)
+  switch4t_value Decimal? @db.Decimal(17, 0)
+  switch4b_value Decimal? @db.Decimal(17, 0)
+  test           test     @relation(fields: [test_id], references: [id], onUpdate: NoAction, map: "test_result_insulation_resistance$Test_ID")
+
+  @@id([test_id, dut_no], map: "PK_test_result_insulation_resistance_test_id")
+  @@index([test_id], map: "test_test_result_id_idx")
+}
+
+model user {
+  id                   Int        @id(map: "PK_user_id") @default(autoincrement())
+  username             String     @unique(map: "user$username_UNIQUE") @db.NVarChar(20)
+  first_name           String     @db.NVarChar(20)
+  last_name            String     @db.NVarChar(20)
+  user_type            String     @db.NVarChar(20)
+  password             String     @db.NVarChar(20)
+  test_test_userTouser test[]     @relation("test_userTouser")
+  user_log             user_log[]
+}
+
+model user_log {
+  id       Int      @id(map: "PK_user_log_id") @default(autoincrement())
+  id_user  Int
+  datetime DateTime
+  user     user     @relation(fields: [id_user], references: [id], onUpdate: NoAction, map: "user_log$Id User")
+
+  @@index([id_user], map: "Id User_idx")
+}

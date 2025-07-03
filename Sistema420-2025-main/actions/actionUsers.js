@@ -1,0 +1,1 @@
+export const updateUserAction = object => ({type: "updateUser", object});
