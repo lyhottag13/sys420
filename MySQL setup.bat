@@ -12,5 +12,4 @@ if NOT %errorlevel%==0 (
 	powershell -Command "(Get-Content prisma\schema.prisma) -replace 'sqlserver', 'mysql' | Set-Content prisma\schema.prisma"
 	npx prisma db pull --force
 	npx prisma generate
-	npm run dev
 )
