@@ -1,4 +1,5 @@
 @echo OFF
+cd Sistema420-2025-main
 del .env
 set /p user=What is the MySQL username?
 set /p password=What is the MySQL password?
