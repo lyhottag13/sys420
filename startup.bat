@@ -1,2 +1,2 @@
 cd Sis*
-npm run dev
+npm.cmd run dev
