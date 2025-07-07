@@ -12,8 +12,8 @@ set /p to_my_sql=Are you trying to setup MySQL? (y/n):
 if /i "%to_my_sql%"=="y" (
   set /p user=What is the MySQL username?
   set /p password=What is the MySQL password?
-  set /p ip=What is the IP address? (e.g. 192.168.1.100, localhost, etc.)
-  set /p port=What is the port? (e.g. 3306, 80, etc.)
+  set /p ip=What is the IP address? ^(e.g. 192.168.1.100, localhost, etc.^)
+  set /p port=What is the port? ^(e.g. 3306, 80, etc.^)
   set /p database=What is the database?
   echo DATABASE_URL=mysql://%user%:%password%@%ip%:%port%/%database% > .env
 )
