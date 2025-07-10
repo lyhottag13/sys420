@@ -23,8 +23,8 @@ if NOT %errorlevel%==0 (
   if /i "%to_my_sql%"=="y" (
     :: If the user wanted MySQL, then we replace the SQL Server settings.
     powershell -Command "(Get-Content prisma\schema.prisma) -replace 'sqlserver', 'mysql' | Set-Content prisma\schema.prisma"
-    npx prisma db pull --force
   )
   :: Generates the prisma tool from the schema.
+  npx prisma db pull --force
   npx prisma generate
 )
