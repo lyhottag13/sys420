@@ -1,10 +1,4 @@
 @echo off
-:: Creates the shortcut in the startup folder, so the app runs silently on startup.
-set "target=%~dp0startupvbs.vbs"
-set "shortcut=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\Sys420.lnk"
-set "startin=%~dp0"
-
-powershell -Command "$s = (New-Object -ComObject WScript.Shell).CreateShortcut('%shortcut%'); $s.TargetPath = '%target%'; $s.WorkingDirectory = '%startin%'; $s.Save()"
 
 cd Sistema420-2025-main
 set /p to_my_sql=Are you trying to setup MySQL? (y/n):
@@ -33,7 +27,4 @@ if NOT %errorlevel%==0 (
   )
   :: Generates the prisma tool from the schema.
   npx prisma generate
-  cd ..
-  :: Starts the app silently.
-  start startupvbs.vbs
 )
