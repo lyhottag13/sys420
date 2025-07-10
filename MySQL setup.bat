@@ -27,4 +27,6 @@ if NOT %errorlevel%==0 (
   :: Generates the prisma tool from the schema.
   npx prisma db pull --force
   npx prisma generate
+  :: Adds the app daemon to pm2.
+  pm2 start node_modules/next/dist/bin/next --name "sys420" -- dev -p 3005
 )
