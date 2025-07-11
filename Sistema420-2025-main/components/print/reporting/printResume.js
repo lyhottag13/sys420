@@ -36,19 +36,24 @@ const GeneratePdf = ({ testsArray, totals }) => {
   // State management for printing and options
   const [prePrinting, setPrePrinting] = useState(false);
   const [printing, setPrinting] = useState(false);
-
-  const [ options, setOptions ] = useState({ 
-    selected_tests: testsArray, 
-    non_selected_tests: [], 
-    include_summary: true, 
-    include_charts: true, 
-    include_raw_data: true, 
+  console.log(testsArray);
+  const [options, setOptions] = useState({
+    selected_tests: testsArray,
+    non_selected_tests: [],
+    include_summary: true,
+    include_charts: true,
+    include_raw_data: true,
     include_fails: true,
     excel_format: false,
     // highlighted_tests_type:[] // guarda arreglos de test seleccionados para impresion de pdf
-   });
-
-  //Opens the printing options dialog
+  });
+  useEffect(() => {
+    setOptions(prev => ({
+      ...prev,
+      selected_tests: testsArray
+    }));
+  }, [testsArray]);
+  // Opens the printing options dialog
   const handlerBubbleClick = () => {
     setPrePrinting(true);
   };
@@ -57,10 +62,10 @@ const GeneratePdf = ({ testsArray, totals }) => {
     if (!printing || !paretoChartRef.current || !histogramsContainerRef.current) return;
 
     // Check if the Excel format option is selected and generate Excel file
-    if(options.excel_format) {
+    if (options.excel_format) {
       generateExcel();
 
-      let newOptions = {...options};
+      let newOptions = { ...options };
       newOptions.excel_format = false;
       setOptions(newOptions);
 
@@ -71,13 +76,13 @@ const GeneratePdf = ({ testsArray, totals }) => {
     generatePdf();
 
     setPrinting(false);
-  }, [printing,paretoChartRef, histogramsContainerRef]);
+  }, [printing, paretoChartRef, histogramsContainerRef]);
 
   //Generates an Excel file with selected tests and options.
   // function generateExcel() {
   //   // Create a new workbook and add a worksheet
   //   const workbook = XLSX.utils.book_new();
-    
+
   //   for(let i in options.selected_tests){
   //     const { headers, data } = getRawDataTable(options.selected_tests[i]);
 
@@ -91,7 +96,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
   //     const worksheet = XLSX.utils.aoa_to_sheet(excel_content);
   //     XLSX.utils.book_append_sheet(workbook, worksheet, ("Test " + options.selected_tests[i].id));
   //   }
-    
+
   //   // // Convert the workbook to a binary string
   //   const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
@@ -101,30 +106,27 @@ const GeneratePdf = ({ testsArray, totals }) => {
   // }
   async function generateExcel() {
     const workbook = new ExcelJS.Workbook();
-  
+
     for (let i in options.selected_tests) {
       const test = options.selected_tests[i];
       const { headers, data } = getRawDataTable(test);
-  
-      const worksheet = workbook.addWorksheet(`Test ${test.id}`);
-  
-      // Agrega encabezados (una sola fila)
-      worksheet.addRow(headers);
-  
-      // Agrega las filas de datos
+
+      const worksheet = workbook.addWorksheet(`Hey ${test.id}`);
+
+      // Agrega encabezados (una sola fi       const worksheet = workbook.addWorksheet(`Test ${test.id}`);
       data.forEach(row => {
         worksheet.addRow(row);
       });
     }
-  
+
     // Genera el archivo Excel en un buffer
     const buffer = await workbook.xlsx.writeBuffer();
-  
+
     // Guarda el archivo en el navegador
     const blob = new Blob([buffer], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
-  
+
     saveAs(blob, 'REPORT.xlsx');
   }
 
@@ -143,22 +145,22 @@ const GeneratePdf = ({ testsArray, totals }) => {
     }
 
     for (let i in options.selected_tests) {
-      if(options.include_summary){
+      if (options.include_summary) {
         addTestSummary(doc, paretoChartRef.current.children[i].children[0], options.selected_tests[i]);
-        
-        if(options.include_charts || options.include_raw_data) doc.addPage();
-      }
-      if(options.include_charts){
-        
-        addHistograms(doc, histogramsContainerRef.current.children[i].children[0], options.selected_tests[i],options.highlighted_test_types);
 
-        if(options.include_raw_data) doc.addPage();
+        if (options.include_charts || options.include_raw_data) doc.addPage();
       }
-      if(options.include_raw_data){
+      if (options.include_charts) {
+
+        addHistograms(doc, histogramsContainerRef.current.children[i].children[0], options.selected_tests[i], options.highlighted_test_types);
+
+        if (options.include_raw_data) doc.addPage();
+      }
+      if (options.include_raw_data) {
         addRawData(doc, options.selected_tests[i]);
       }
-      
-      if(i < options.selected_tests.length - 1) doc.addPage();
+
+      if (i < options.selected_tests.length - 1) doc.addPage();
     }
 
     window.open(doc.output("bloburl", { filename: "REPORT" }), "_blank");
@@ -212,7 +214,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
     doc.text(text, x, positionY);
   }
   function addTextOnRowLtR(doc, text, row, x) {
-    text = text? text : "";
+    text = text ? text : "";
     const interline = 2;
     const top = 42.5;
     const textWidth = doc.getTextWidth(text);
@@ -222,7 +224,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
 
     doc.text(text, x - textWidth, positionY);
   }
-  
+
   /**
    * Adds a header section to each page of the PDF, containing test metadata.
    * @param {jsPDF} doc - The jsPDF document instance.
@@ -238,18 +240,18 @@ const GeneratePdf = ({ testsArray, totals }) => {
       22.6
     );
     addTextOnRow(doc, `PLT  : \nLOT : \nDC   :`, 1, 210.6);
-    addTextOnRow(doc, `FILENAME   :\nTEST DATE   :\nSTART TIME :`, 1, 398.6);
+    addTextOnRow(doc, `FILENAME  :\nTEST DATE   :\nSTART TIME :`, 1, 398.6);
     doc.setFont(undefined, "normal");
 
-    const dateParts = test.start_datetime.slice(0,10).split('-'); // Assumes the format is 'YYYY-MM-DD'
+    const dateParts = test.start_datetime.slice(0, 10).split('-'); // Assumes the format is 'YYYY-MM-DD'
     const formattedDate = `${dateParts[1]}-${dateParts[2]}-${dateParts[0]}`;
 
 
     addTextOnRow(doc, `Vers 1.0`, 0, 140);                          //System 420 Version
     addTextOnRow(doc, `${test.type_of_test}`, 0, 230);             //type_of_test
-    addTextOnRow(doc, `${test.pn}\n${test.application}\n${test.revision}`, 1, 73); 
-    addTextOnRow(doc, `${test.plt}\n${test.lot_number}\n${test.datecode}`, 1, 250);                
-    addTextOnRow(doc, `${test.filename}\n${formattedDate}\n${test.start_datetime.slice(11,19)}`, 1, 485);
+    addTextOnRow(doc, `${test.pn}\n${test.application}\n${test.revision}`, 1, 73);
+    addTextOnRow(doc, `${test.plt}\n${test.lot_number}\n${test.datecode}`, 1, 250);
+    addTextOnRow(doc, `${test.filename}\n${formattedDate}\n${test.start_datetime.slice(11, 19)}`, 1, 485);
     doc.line(22.6, 90, 586.7, 90);
   }
 
@@ -356,12 +358,12 @@ const GeneratePdf = ({ testsArray, totals }) => {
    * @param {jsPDF} doc - The jsPDF document instance.
    * @param {Object} test - The test object containing the raw data to be added to the PDF.
   */
-  function addRawData(doc,test) {
+  function addRawData(doc, test) {
     addHeader(doc, test);
 
     const { headers, data } = getRawDataTable(test);
 
-    autoTable(doc,{
+    autoTable(doc, {
       startY: 108,
       styles: {
         halign: "center",
@@ -390,7 +392,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
     addHeader(doc, test);
     const fontSize = 10;
     const initialY = 120; //margen de header cuando se inicializa la hoja
-    const xCoord = [50, 320]; 
+    const xCoord = [50, 320];
     const isLargeChart = test_seleccionados.length !== 0;
     const chartWidth = isLargeChart ? 400 : 200;// si se hace seleccion de test, cambia tamano de chart 
     const chartHeight = isLargeChart ? 180 : 90;
@@ -402,20 +404,20 @@ const GeneratePdf = ({ testsArray, totals }) => {
     const boxHeight = 40;
     const boxIndentationX = 3;
     const boxIndentationY = 10;
-  
+
     const distanceTitleY = fontSize + gapTitleY;
     const distanceChartY = chartHeight + gapChartY;
-  
+
     const maxChartHeight = 762 - (distanceChartY + distanceTitleY);
-  
+
     doc.setFontSize(fontSize);
-  
+
     let y = initialY;
     let xIteration = 0; // cuando se imprimen todos los canvas en tamaño pequeño, cuenta cuantos graficos por renglon 
-  
+
     function insertHistogramCanvas(htmlReference) {
       if (htmlReference.localName === "canvas") {
-        
+
         const test_type = htmlReference.attributes.test_type ? htmlReference.attributes.test_type.nodeValue : "";
         if (test_seleccionados.length === 0 || test_seleccionados.includes(test_type)) {
           if (y > maxChartHeight) {
@@ -424,17 +426,17 @@ const GeneratePdf = ({ testsArray, totals }) => {
             doc.addPage();
             addHeader(doc, test);
           }
-  
+
           // Si es gráfico grande, siempre usar xCoord[0], si pequeño usar alternancia
           const x = isLargeChart ? xCoord[0] : xCoord[xIteration];
-  
+
           let mean = htmlReference.attributes.mean.nodeValue;
           let sigma = htmlReference.attributes.sigma.nodeValue;
           let ucpk = htmlReference.attributes.ucpk.nodeValue;
           let lcpk = htmlReference.attributes.lcpk.nodeValue;
-  
+
           addCenteredText(doc, test_type, y, x, x + chartWidth);
-  
+
           addWhiteBgtoCanva(htmlReference);
           doc.addImage(
             htmlReference.toDataURL("image/jpeg", 1.0),
@@ -444,7 +446,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
             chartWidth,
             chartHeight
           );
-  
+
           // Box estadístico
           doc.setFontSize(7);
           doc.setFillColor("#FFFFFF").rect(x + Xbox, y + Ybox, boxWidth, boxHeight, 'FD');
@@ -454,9 +456,9 @@ const GeneratePdf = ({ testsArray, totals }) => {
             `UCpk: ${ucpk}`,
             `LCpk: ${lcpk}`
           ], x + Xbox + boxIndentationX, y + Ybox + boxIndentationY);
-  
+
           doc.setFontSize(fontSize);
-  
+
           if (isLargeChart) {
             // para gráficos grandes, avanzar Y siempre porque solo uno por línea
             y += distanceChartY;
@@ -474,30 +476,29 @@ const GeneratePdf = ({ testsArray, totals }) => {
         insertHistogramCanvas(child);
       }
     }
-  
+
     for (let switchContainer of container.children) {
       const switch_name = switchContainer.attributes.switch_name.nodeValue;
-      
+
       doc.setFont(undefined, "bold");
       addCenteredText(doc, switch_name, y, 22.6, 586.7);
-      
+
       doc.setFont(undefined, "normal");
-      y += fontSize; 
+      y += fontSize;
       insertHistogramCanvas(switchContainer);
-  
+
       if (y > maxChartHeight) {
         y = initialY;
         xIteration = 0;
         // addHeader(doc, test);
       } else {
-        if(!isLargeChart)
-        {
+        if (!isLargeChart) {
           y += distanceChartY;
         }
         xIteration = 0;
       }
     }
-  } 
+  }
 
 
   /**
@@ -528,17 +529,17 @@ const GeneratePdf = ({ testsArray, totals }) => {
     const pareto_object = {};
     const pareto_array = [];
 
-    for(let result of selected_test_results){
-      if(result.result == 'PASS') continue;
+    for (let result of selected_test_results) {
+      if (result.result == 'PASS') continue;
 
-      if(!pareto_object[result.test_type]) pareto_object[result.test_type] = { name: testsViewParameters[result.test_type].name, quantity: 0 };
+      if (!pareto_object[result.test_type]) pareto_object[result.test_type] = { name: testsViewParameters[result.test_type].name, quantity: 0 };
 
       pareto_object[result.test_type].quantity++;
     }
 
-    for(let key in pareto_object){
+    for (let key in pareto_object) {
       const { name, quantity } = pareto_object[key];
-      pareto_array.push([name,`${quantity}`]);
+      pareto_array.push([name, `${quantity}`]);
     }
 
     return pareto_array;
@@ -550,40 +551,40 @@ const GeneratePdf = ({ testsArray, totals }) => {
    * @param {Object} test - The test object containing raw data results.
    * @return {Object} An object containing formatted headers and data ready for export.
   */
-  function getRawDataTable(test){
+  function getRawDataTable(test) {
     const selected_test_results = test.test_result;
     let temporal_data = [];
     let data = [];
-    let headers = ["DUT","SW"];
+    let headers = ["DUT", "SW"];
 
     let active_test_object = {};
     let test_counter = 2;
 
     // {"test_id": 46,"dut_no": 9,"test_type": "SHO","switch": 0,"result": "FAIL","value": null}
-    for(let result of selected_test_results){
+    for (let result of selected_test_results) {
       let actual_switch = 1;
 
-      if(!active_test_object[result.test_type]){ 
+      if (!active_test_object[result.test_type]) {
         active_test_object[result.test_type] = test_counter;
         headers.push(testsViewParameters[result.test_type].short_name);
         test_counter++;
       }
-      if(!temporal_data[result.dut_no])                 temporal_data[result.dut_no] = [];
-      if(!temporal_data[result.dut_no][actual_switch])  temporal_data[result.dut_no][actual_switch] = [`${result.dut_no}`,`${actual_switch}`];
+      if (!temporal_data[result.dut_no]) temporal_data[result.dut_no] = [];
+      if (!temporal_data[result.dut_no][actual_switch]) temporal_data[result.dut_no][actual_switch] = [`${result.dut_no}`, `${actual_switch}`];
 
-      
+
       //Make sure to change the data to number if the information is not 'PASS' and/or 'FAIL'
       let value = result.result !== 'PASS' && result.result !== 'FAIL' ? parseFloat(result.value) : result.result;
 
-       // Usar el valor convertido
-    //temporal_data[result.dut_no][actual_switch][active_test_object[result.test_type]] = !isNaN(value) ? value.toFixed(testsViewParameters[result.test_type].decimals) : value;
-    temporal_data[result.dut_no][actual_switch][active_test_object[result.test_type]] = result.value? `${parseFloat(result.value).toFixed(testsViewParameters[result.test_type].decimals)}` : result.result;
+      // Usar el valor convertido
+      //temporal_data[result.dut_no][actual_switch][active_test_object[result.test_type]] = !isNaN(value) ? value.toFixed(testsViewParameters[result.test_type].decimals) : value;
+      temporal_data[result.dut_no][actual_switch][active_test_object[result.test_type]] = result.value ? `${parseFloat(result.value).toFixed(testsViewParameters[result.test_type].decimals)}` : result.result;
     }
 
-    for(let dut_data of temporal_data){
-      if(!dut_data) continue;
-      for(let switch_data of dut_data){
-        if(!switch_data) continue;
+    for (let dut_data of temporal_data) {
+      if (!dut_data) continue;
+      for (let switch_data of dut_data) {
+        if (!switch_data) continue;
         //data.push(switch_data);
         data.push(switch_data.map(value => isNaN(value) ? value : parseFloat(value)));
       }
@@ -752,19 +753,19 @@ const GeneratePdf = ({ testsArray, totals }) => {
         <PrintIcon className="fill-current text-white m-0 text-xl" />
       </button>
       {
-        printing && 
+        printing &&
         <Loader />
       }
       {
-        prePrinting && 
-        <PrintOptions isUnique={testsArray.length == 1} setPrePrinting={setPrePrinting} setPrinting={setPrinting} options={options} setOptions={setOptions} printing={printing}/>
+        prePrinting &&
+        <PrintOptions isUnique={testsArray.length == 1} setPrePrinting={setPrePrinting} setPrinting={setPrinting} options={options} setOptions={setOptions} printing={printing} />
       }
       {
-        printing && 
+        printing &&
         <div ref={paretoChartRef}>
           {
-            options.selected_tests.map((test)=>(
-              <div key={`pareto-container-test${test.id}`} style={{maxWidth: "none",maxHeight: "none",height: "600px",width: "600px"}}>
+            options.selected_tests.map((test) => (
+              <div key={`pareto-container-test${test.id}`} style={{ maxWidth: "none", maxHeight: "none", height: "600px", width: "600px" }}>
                 <ParetoChart selectedTest={test} printing={true} />
               </div>
             ))
@@ -774,17 +775,17 @@ const GeneratePdf = ({ testsArray, totals }) => {
       {
         printing &&
         <div ref={histogramsContainerRef}>
-          
+
           {
-            
-          //  options.selected_tests.filter(test => options.highlighted_tests_types?.includes(test.id)).map((test)=>(
-            options.selected_tests.map((test)=>(
-                <div key={`histogram-main-container-test${test.id}`} style={{maxWidth: "none",maxHeight: "none",height: "270px",width: "600px"}}>
-                   {/* <MainHistogramContainer hideFails={ !options.include_fails } selectedTest={test} printing={true}/> */
-                   <MainHistogramContainer hideFails={ !options.include_fails } selectedTest={!options.highlighted_tests_types ? test : options.highlighted_tests_types } printing={true}/>}
-                 </div>
-               ))
-              }
+
+            //  options.selected_tests.filter(test => options.highlighted_tests_types?.includes(test.id)).map((test)=>(
+            options.selected_tests.map((test) => (
+              <div key={`histogram-main-container-test${test.id}`} style={{ maxWidth: "none", maxHeight: "none", height: "270px", width: "600px" }}>
+                {/* <MainHistogramContainer hideFails={ !options.include_fails } selectedTest={test} printing={true}/> */
+                  <MainHistogramContainer hideFails={!options.include_fails} selectedTest={!options.highlighted_tests_types ? test : options.highlighted_tests_types} printing={true} />}
+              </div>
+            ))
+          }
         </div>
       }
       {/* {

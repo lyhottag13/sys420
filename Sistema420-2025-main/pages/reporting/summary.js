@@ -40,11 +40,11 @@ export default function Summary() {
     }
   }, [currentSearch.tests, currentSearch.selectedTests, toggleTestSelection]);
 
-  const { currentSearch: { selectedTests = [] } } = useTestsStore();
-
+  // const { currentSearch: { selectedTests = [] } } = useTestsStore();
+  console.log(currentSearch.selectedTests);
   // Map selected IDs to test objects
   const selectedTestObjects = currentSearch.selectedTests ?? [];
-
+  console.log(selectedTestObjects);
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const [year, month, day] = dateString.split('-');
@@ -136,7 +136,7 @@ const combinedData = {
     )
   ),
 };
-
+console.log(combinedData);
 
   return (
     <div className="flex flex-col items-center justify-between min-h-screen overflow-hidden">
@@ -281,7 +281,8 @@ const combinedData = {
       </section>
 
       <Footer />
-      {/* Pass the array of selected tests to PrintResume */}
+      {/* Pass the array of selected tests to PrintResume */
+      console.log(selectedTestObjects)};
       <PrintResume testsArray={selectedTestObjects} totals={combinedData} />
     </div>
   );

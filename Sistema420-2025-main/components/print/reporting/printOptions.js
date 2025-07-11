@@ -96,9 +96,14 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
 
   //Initiates the printing process if valid options are selected.
   const printButtonHandler = (e) => {
+    console.log(options);
     e.preventDefault();
     if (!options.include_summary && !options.include_charts && !options.include_raw_data) return;
-    // if (!options.selected_tests.length) { console.log('WRONG2!'); return;};
+    if (!options.selected_tests.length) {
+      console.log('WRONG2!');
+      console.log(options.selected_tests);
+      return;
+    }
 
     setPrePrinting(false);
     setPrinting(true);
@@ -118,9 +123,8 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
   };
 
   //Adds selected non-printed tests to the print queue.
-  const addButtonHanlder = (e) => {
+  const addButtonHandler = (e) => {
     e.preventDefault();
-
     let selected_options = [];
     for (let op of nonSelectedTestsRef.current.children) {
       if (op.selected) selected_options.push(parseInt(op.value));
@@ -178,7 +182,7 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
   }
 
   //Handles selection change for including failed pieces.
-  const hideFailsSelectChangeHanlder = (e) => {
+  const hideFailsSelectChangeHandler = (e) => {
     e.preventDefault();
 
     let newOptions = { ...options };
@@ -198,7 +202,7 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
           {
             !isUnique &&
             <div className='flex flex-col gap-y-1 items-center'>
-              <p>Select the test IDs to include in the pdf</p>
+              <p>Select the test filenames to include in the pdf</p>
               <div className="flex flex-col md:flex-row justify-between items-center gap-x-5">
                 <div className='flex flex-col items-center'>
                   <h3 className='text-sm'>Non selected Tests</h3>
@@ -210,7 +214,7 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
                 </div>
 
                 <div className="flex flex-row md:flex-col gap-y-3 gap-x-3">
-                  <div onClick={addButtonHanlder}><RightArrowIcon className="w-7 fill-current text-black hover:cursor-pointer hover:text-green-300 rotate-90 md:rotate-0" /></div>
+                  <div onClick={addButtonHandler}><RightArrowIcon className="w-7 fill-current text-black hover:cursor-pointer hover:text-green-300 rotate-90 md:rotate-0" /></div>
                   <div onClick={removeButtonHandler}><RightArrowIcon className="w-7 fill-current text-black hover:cursor-pointer hover:text-red-300 -rotate-90 md:rotate-180" /></div>
                 </div>
 
@@ -231,7 +235,7 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
             <div>
               <div className='flex flex-row gap-x-2 items-center'>
                 <input defaultChecked={options.include_summary} onClick={summaryCheckboxChangeHandler} id="pareto-checkbox" name="pareto-checkbox" type="checkbox" />
-                <label htmlFor="pareto-checkbox">Summary  / Pareto</label>
+                <label htmlFor="pareto-checkbox">Summary / Pareto</label>
               </div>
               <div className='flex flex-row gap-x-2 items-center'>
                 <input defaultChecked={options.include_charts} onClick={chartsCheckboxChangeHandler} id="histograms-checkbox" name="histograms-checkbox" type="checkbox" />
@@ -288,7 +292,7 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
 
           <div className='flex flex-row items-center gap-x-3'>
             <p>Include failed pieces?</p>
-            <select onChange={hideFailsSelectChangeHanlder} className=''>
+            <select onChange={hideFailsSelectChangeHandler} className=''>
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
