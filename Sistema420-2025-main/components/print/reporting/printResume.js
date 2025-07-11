@@ -238,7 +238,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
       22.6
     );
     addTextOnRow(doc, `PLT  : \nLOT : \nDC   :`, 1, 210.6);
-    addTextOnRow(doc, `ID                   :\nTEST DATE   :\nSTART TIME :`, 1, 398.6);
+    addTextOnRow(doc, `FILENAME   :\nTEST DATE   :\nSTART TIME :`, 1, 398.6);
     doc.setFont(undefined, "normal");
 
     const dateParts = test.start_datetime.slice(0,10).split('-'); // Assumes the format is 'YYYY-MM-DD'
@@ -249,7 +249,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
     addTextOnRow(doc, `${test.type_of_test}`, 0, 230);             //type_of_test
     addTextOnRow(doc, `${test.pn}\n${test.application}\n${test.revision}`, 1, 73); 
     addTextOnRow(doc, `${test.plt}\n${test.lot_number}\n${test.datecode}`, 1, 250);                
-    addTextOnRow(doc, `${test.id}\n${formattedDate}\n${test.start_datetime.slice(11,19)}`, 1, 485);
+    addTextOnRow(doc, `${test.filename}\n${formattedDate}\n${test.start_datetime.slice(11,19)}`, 1, 485);
     doc.line(22.6, 90, 586.7, 90);
   }
 
@@ -660,7 +660,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
     addTextOnRow(doc, `REV# :`, 3, 22.6);
     addTextOnRow(doc, `PLT  :`, 1, 210.6);
     addTextOnRow(doc, `DC   :`, 2, 210.6);
-    addTextOnRow(doc, `ID   :`, 3, 210.6);
+    addTextOnRow(doc, `FILENAME  :`, 3, 170.6);
     addTextOnRow(doc, `TEST DATE   :`, 1, 398.6);
     addTextOnRow(doc, `START TIME :`, 2, 398.6);
     doc.setFont(undefined, "normal");
@@ -669,7 +669,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
     addTextOnRow(doc, `${totals.revision || ""}`, 3, 73);
     addTextOnRow(doc, `${totals.plt || ""}`, 1, 250.6);
     addTextOnRow(doc, `${totals.datecode || ""}`, 2, 250.6);
-    addTextOnRow(doc, `${totals.id || ""}`, 3, 250.6);
+    addTextOnRow(doc, `${totals.filename || ""}`, 3, 250.6);
     addTextOnRow(doc, `${testDate}`, 1, 485);
     addTextOnRow(doc, `${startTime}`, 2, 485);
 

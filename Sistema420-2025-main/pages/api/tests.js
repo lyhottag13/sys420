@@ -30,45 +30,45 @@ function safeJson(obj) {
  */
 export default async function handler(req, res) {
   if (req.method === 'GET') {
-    try{
-      
-      // Extract query parameters and parse ID list if provided
-      const { id, pn, application, plt, start_datetime1, start_datetime2, yield1, yield2 } = req.query;
+    try {
 
-      if (!pn && !application && !plt && !start_datetime1 && !start_datetime2 && !yield1 && !yield2 && !id) {
-          return res.status(400).json({ error: 'At least one filter parameter is required.' });
+      // Extract query parameters and parse ID list if provided
+      const { filename, id, pn, application, plt, start_datetime1, start_datetime2, yield1, yield2 } = req.query;
+      if (!filename && !pn && !application && !plt && !start_datetime1 && !start_datetime2 && !yield1 && !yield2 && !id) {
+        return res.status(400).json({ error: 'At least one filter parameter is required.' });
       }
 
       const idList = id ? id.split(',').map((i) => parseInt(i)) : [];
 
       // Construct dynamic query based on provided filters
       const query = {
-          where: idList.length > 0 && idList[0] ? { id: { in: idList } } : {
-              AND: [
-                  pn ? { pn } : {},
-                  application ? { application } : {},
-                  plt ? { plt } : {},
-                  start_datetime1 || start_datetime2 ? { start_datetime: { ...(start_datetime1 ? { gte: new Date(start_datetime1) } : {}), ...(start_datetime2 ? { lte: new Date(start_datetime2) } : {}) } } : {},
-                  yield1 || yield2 ? { yield: { ...(yield1 ? { gte: yield1 } : {}), ...(yield2 ? { lte: yield2 } : {}) } } : {}
-              ].filter(Boolean)
-          },
-          include: {
-              part_test_specifications: true,
-              test_result: {
-                  orderBy: [
-                      { dut_no: 'asc' },
-                      { switch: 'asc' },
-                      { test_type: 'asc' }
-                  ],
-              }
-          },
-      };
+        where: filename ? { filename: filename } : {
+          AND: [
 
+            pn ? { pn } : {},
+            application ? { application } : {},
+            plt ? { plt } : {},
+            start_datetime1 || start_datetime2 ? { start_datetime: { ...(start_datetime1 ? { gte: new Date(start_datetime1) } : {}), ...(start_datetime2 ? { lte: new Date(start_datetime2) } : {}) } } : {},
+            yield1 || yield2 ? { yield: { ...(yield1 ? { gte: yield1 } : {}), ...(yield2 ? { lte: yield2 } : {}) } } : {}
+          ].filter(Boolean)
+        },
+        include: {
+          part_test_specifications: true,
+          test_result: {
+            orderBy: [
+              { dut_no: 'asc' },
+              { switch: 'asc' },
+              { test_type: 'asc' }
+            ],
+          }
+        },
+      };
+      console.log(query.where);
       // Execute query and return results
       let tests = await prisma.test.findMany(query);
       res.status(200).json(safeJson(tests))
     }
-    catch (error){
+    catch (error) {
       // Handle errors and send error response
       console.error('Error fetching tests:', error);
       res.status(505).json({ error: 'Fetching Error' });

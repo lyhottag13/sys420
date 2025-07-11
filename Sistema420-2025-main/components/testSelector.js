@@ -48,7 +48,7 @@ export default function TestSelector() {
       <Autocomplete
         multiple
         options={filteredOptions}
-        getOptionLabel={(test) => `ID: ${test.id} - PN: ${test.pn}`}
+        getOptionLabel={(test) => `FILENAME: ${test.filename} - PN: ${test.pn}`}
         value={currentSearch.selectedTests || []}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         onChange={handleChange}
@@ -97,7 +97,7 @@ export default function TestSelector() {
             >
               <Checkbox checked={selected} style={{ marginRight: 8, padding: 4 }} size="small" />
               <span style={{ fontWeight: 600, marginRight: 8, fontSize: 16 }}>
-                ID: {option.id}
+                FILENAME: {option.filename}
               </span>
               <span style={{ color: "#888", fontSize: 15 }}>PN: {option.pn}</span>
             </div>

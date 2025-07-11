@@ -98,7 +98,7 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
   const printButtonHandler = (e) => {
     e.preventDefault();
     if (!options.include_summary && !options.include_charts && !options.include_raw_data) return;
-    if (!options.selected_tests.length) return;
+    // if (!options.selected_tests.length) { console.log('WRONG2!'); return;};
 
     setPrePrinting(false);
     setPrinting(true);
@@ -108,7 +108,7 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
   const printExcelButtonHandler = (e) => {
     e.preventDefault();
     if (!options.include_summary && !options.include_charts && !options.include_raw_data) return;
-    if (!options.selected_tests.length) return;
+    // if (!options.selected_tests.length) return;
 
     setPrePrinting(false);
     let newOptions = { ...options };
@@ -198,13 +198,13 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
           {
             !isUnique &&
             <div className='flex flex-col gap-y-1 items-center'>
-              <p>Select the test IDs to include in de pdf</p>
+              <p>Select the test IDs to include in the pdf</p>
               <div className="flex flex-col md:flex-row justify-between items-center gap-x-5">
                 <div className='flex flex-col items-center'>
                   <h3 className='text-sm'>Non selected Tests</h3>
                   <select ref={nonSelectedTestsRef} size="6" id="nonSelectedTests" name="nonSelectedTests" className="py-1 px-3 border border-gray-400 w-36 " multiple>
                     {
-                      options.non_selected_tests.map((t) => (<option key={`option-test-${t.id}`} value={t.id}>{t.id}</option>))
+                      options.non_selected_tests.map((t) => (<option key={`option-test-${t.id}`} value={t.id}>{t.filename}</option>))
                     }
                   </select>
                 </div>
@@ -218,7 +218,7 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
                   <h3 className='text-sm'>Selected Tests</h3>
                   <select ref={selectedTestsRef} size="6" id="selectedTests" name="selectedTests" className="py-1 px-3 border border-gray-400 w-36 " multiple>
                     {
-                      options.selected_tests.map((t) => (<option key={`option-test-${t.id}`} value={t.id}>{t.id}</option>))
+                      options.selected_tests.map((t) => (<option key={`option-test-${t.id}`} value={t.id}>{t.filename}</option>))
                     }
                   </select>
                 </div>

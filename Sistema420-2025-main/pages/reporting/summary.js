@@ -74,6 +74,7 @@ const totalIssueYield = selectedTestObjects.reduce(
 );
 
 const combinedData = {
+  filename: selectedTestObjects.map(t => t.filename).join(", "),
   id: selectedTestObjects.map(t => t.id).join(", "),
   plt: selectedTestObjects.map(t => t.plt).join(", "),
   datecode: selectedTestObjects.map(t => t.datecode).join(", "),
@@ -167,7 +168,7 @@ const combinedData = {
               </div>
               <div className="flex flex-col items-center space-y-1">
                 <h3 className="font-bold">Normal Production Test</h3>
-                <p>ID: {combinedData?.id}</p>
+                <p>FILENAME: {combinedData?.filename}</p>
                 <p>PLT: {combinedData?.plt}</p>
                 <p>DC: {combinedData?.datecode}</p>
               </div>

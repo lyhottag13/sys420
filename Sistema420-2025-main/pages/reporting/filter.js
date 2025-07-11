@@ -3,8 +3,8 @@ import Header from "../../components/header";
 import Footer from "../../components/footer";
 
 
-import {useRouter} from 'next/router';
-import {useState, useEffect} from 'react';
+import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
 import { useTestsStore } from "../../store/testsContext";
 import Loader from '../../components/loader';
 
@@ -26,8 +26,8 @@ import Loader from '../../components/loader';
  */
 export default function Filter() {
   const router = useRouter();
-  const [params, setParams] = useState({id: '', application: 'FINAL', start_datetime1: (new Date()).toISOString().substring(0, 10), start_datetime2: (new Date()).toISOString().substring(0, 10), yield1: 0, yield2: 100});
-  const {currentSearch, updateParams} = useTestsStore();
+  const [params, setParams] = useState({ id: '', application: 'FINAL', start_datetime1: (new Date()).toISOString().substring(0, 10), start_datetime2: (new Date()).toISOString().substring(0, 10), yield1: 0, yield2: 100 });
+  const { currentSearch, updateParams } = useTestsStore();
   const [isNewSearch, setIsNewSearch] = useState(false);
 
   /**
@@ -35,21 +35,21 @@ export default function Filter() {
    * 
    * @param {Event} e - The event object associated with the form submission.
    */
-  async function handlerSubmit(e){
-    e.preventDefault();  
+  async function handlerSubmit(e) {
+    e.preventDefault();
     setIsNewSearch(true);
     await updateParams(params);
   }
-  
+
   // Effect hook to navigate to the summary report page after a successful search.
-  useEffect(()=>{
-    if(!isNewSearch) return;
+  useEffect(() => {
+    if (!isNewSearch) return;
     setIsNewSearch(false);
-    
-    if(currentSearch.tests.error) return alert(currentSearch.tests.error);
-    if(currentSearch.tests.length < 1) return alert('Sorry, there are no tests that matches your params.');
+
+    if (currentSearch.tests.error) return alert(currentSearch.tests.error);
+    if (currentSearch.tests.length < 1) return alert('Sorry, there are no tests that matches your params.');
     router.push('/reporting/summary');
-  },[currentSearch])
+  }, [currentSearch])
 
   return (
     <div className="flex flex-col items-center justify-between min-h-screen overflow-hidden">
@@ -64,26 +64,26 @@ export default function Filter() {
         <div className="pt-8 pb-5 border-b-2 border-gray-300 w-full text-center">
           <h1 className="text-4xl">Filter</h1>
         </div>
-        
+
         <p>Search for tests results.</p>
 
         <div className="flex justify-center items-center px-3">
           <form className="w-full max-w-xl bg-gray-300 py-5 px-8">
             <div className="flex flex-col items-left mb-7">
-              <label className="block text-black text-lg" htmlFor="testId">Test ID</label>
-              <input id="testId" name="testId" onChange={(e)=> {setParams({...params, id: e.target.value})}} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="text" placeholder="#"/>
+              <label className="block text-black text-lg" htmlFor="filename">Filename</label>
+              <input id="filename" name="filename" onChange={(e) => { setParams({ ...params, filename: e.target.value }) }} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="text" placeholder="#" />
             </div>
             <div className="flex items-center justify-center my-7">
               <span>- or -</span>
             </div>
             <div className="flex flex-col items-left mb-7">
               <label className="block text-black text-lg" htmlFor="partNumber">Part Number</label>
-              <input id="partNumber" name="partNumber" onChange={(e)=> {setParams({...params, pn: e.target.value})}} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="text" placeholder="0000-0000"/>
+              <input id="partNumber" name="partNumber" onChange={(e) => { setParams({ ...params, pn: e.target.value }) }} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="text" placeholder="0000-0000" />
             </div>
             <div className="flex flex-col items-left mb-7">
               <label className="block text-black text-lg" htmlFor="application">Application</label>
               <div className="relative">
-                <input placeholder="Final" type="text" list="application" onChange={(e)=> {setParams({...params, application: e.target.value})}} className="appearance-none border-b border-black focus:border-blue-500 outline-none w-full bg-gray-300 text-gray-700 py-3 leading-tight uppercase"/>
+                <input placeholder="Final" type="text" list="application" onChange={(e) => { setParams({ ...params, application: e.target.value }) }} className="appearance-none border-b border-black focus:border-blue-500 outline-none w-full bg-gray-300 text-gray-700 py-3 leading-tight uppercase" />
                 <datalist id="application">
                   <option>Final</option>
                   <option>Customer</option>
@@ -101,21 +101,21 @@ export default function Filter() {
             <div className="flex flex-col items-left mb-7">
               <label className="block text-black text-lg" htmlFor="testDate">Test Date</label>
               <div className="flex justify-between space-x-3">
-                <input id="testDate1" name="testDate1" onChange={(e)=> {setParams({...params, start_datetime1: e.target.value})}} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="date" value={params.start_datetime1}/>
+                <input id="testDate1" name="testDate1" onChange={(e) => { setParams({ ...params, start_datetime1: e.target.value }) }} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="date" value={params.start_datetime1} />
                 <span>-</span>
-                <input id="testDate2" name="testDate2" onChange={(e)=> {setParams({...params, start_datetime2: e.target.value})}} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="date" value={params.start_datetime2}/>
+                <input id="testDate2" name="testDate2" onChange={(e) => { setParams({ ...params, start_datetime2: e.target.value }) }} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="date" value={params.start_datetime2} />
               </div>
             </div>
             <div className="flex flex-col items-left mb-7">
               <label className="block text-black text-lg" htmlFor="pltNumber">PLT Number</label>
-              <input id="pltNumber" name="pltNumber" onChange={(e)=> {setParams({...params, plt: e.target.value})}} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="number" placeholder="0"/>
+              <input id="pltNumber" name="pltNumber" onChange={(e) => { setParams({ ...params, plt: e.target.value }) }} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="number" placeholder="0" />
             </div>
             <div className="flex flex-col items-left mb-7">
               <label className="block text-black text-lg" htmlFor="yield">Yield</label>
               <div className="flex justify-between space-x-3">
-                <input id="yield1" name="yield1" value={params.yield1} onChange={(e)=> {setParams({...params, yield1: e.target.value})}} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="number" placeholder="0"/>
+                <input id="yield1" name="yield1" value={params.yield1} onChange={(e) => { setParams({ ...params, yield1: e.target.value }) }} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="number" placeholder="0" />
                 <span>-</span>
-                <input id="yield2" name="yield2" value={params.yield2} onChange={(e)=> {setParams({...params, yield2: e.target.value})}} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="number" placeholder="0"/>
+                <input id="yield2" name="yield2" value={params.yield2} onChange={(e) => { setParams({ ...params, yield2: e.target.value }) }} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="number" placeholder="0" />
               </div>
             </div>
             <div className="flex flex-col items-center">
@@ -129,7 +129,7 @@ export default function Filter() {
         isNewSearch &&
         <Loader />
       }
-      
+
 
       <Footer />
     </div>
