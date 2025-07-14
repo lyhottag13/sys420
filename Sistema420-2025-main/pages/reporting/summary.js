@@ -41,7 +41,6 @@ export default function Summary() {
   }, [currentSearch.tests, currentSearch.selectedTests, toggleTestSelection]);
 
   // const { currentSearch: { selectedTests = [] } } = useTestsStore();
-  console.log(currentSearch.selectedTests);
   // Map selected IDs to test objects
   const selectedTestObjects = currentSearch.selectedTests ?? [];
   console.log(selectedTestObjects);
@@ -281,8 +280,7 @@ console.log(combinedData);
       </section>
 
       <Footer />
-      {/* Pass the array of selected tests to PrintResume */
-      console.log(selectedTestObjects)};
+      {/* Pass the array of selected tests to PrintResume */}
       <PrintResume testsArray={selectedTestObjects} totals={combinedData} />
     </div>
   );

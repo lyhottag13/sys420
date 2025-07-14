@@ -65,7 +65,7 @@ export default function Filter() {
 
     if (currentSearch.tests.error) return alert(currentSearch.tests.error);
     if (currentSearch.tests.length < 1) return alert('Sorry, there are no tests that matches your params.');
-    // Adds the 'fromApp' flag to the URL if we came from the app.
+    // Adds the 'fromApp flag if we came from the app. It helps later to automatically start the printing process.
     fromApp && router.push('/reporting/summary?fromApp=true');
     router.push('/reporting/summary');
     

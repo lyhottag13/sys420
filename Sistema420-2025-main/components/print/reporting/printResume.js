@@ -51,6 +51,11 @@ const GeneratePdf = ({ testsArray, totals }) => {
       ...prev,
       selected_tests: testsArray
     }));
+    // If the URL has fromApp, then we will automatically start the printing process.
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('fromApp')) {
+      setPrinting(true);
+    }
   }, [testsArray]);
   // Opens the printing options dialog
   const handlerBubbleClick = () => {
