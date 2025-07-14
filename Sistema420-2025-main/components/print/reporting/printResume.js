@@ -114,6 +114,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
 
       // Agrega encabezados (una sola fi       const worksheet = workbook.addWorksheet(`Test ${test.id}`);
       const [ newHeaders ] = headers;
+
       worksheet.addRow(newHeaders);
       data.forEach(row => {
         worksheet.addRow(row);
@@ -164,7 +165,8 @@ const GeneratePdf = ({ testsArray, totals }) => {
       if (i < options.selected_tests.length - 1) doc.addPage();
     }
     window.open(doc.output("bloburl", { filename: "REPORT" }), "_blank");
-    window.location = '/reporting/filter';
+    // Sends the user back to the filter page since the app gets stuck loading otherwise.
+    window.location = '/reporting/filter';  
   }
 
   /**
@@ -559,12 +561,13 @@ const GeneratePdf = ({ testsArray, totals }) => {
     let headers = ["DUT", "SW"];
 
     let active_test_object = {};
-    let test_counter = 2;
-
+    let test_counter = 2; // The number of tests performed on a switch/relay combo. Default is 2 since our two headers push up the queue.
+    console.log(selected_test_results);
     // {"test_id": 46,"dut_no": 9,"test_type": "SHO","switch": 0,"result": "FAIL","value": null}
     for (let result of selected_test_results) {
       let actual_switch = 1;
 
+      // If the active test has a header that doesn't exist in the excel table yet, add it to the headers.
       if (!active_test_object[result.test_type]) {
         active_test_object[result.test_type] = test_counter;
         headers.push(testsViewParameters[result.test_type].short_name);
@@ -574,12 +577,13 @@ const GeneratePdf = ({ testsArray, totals }) => {
       if (!temporal_data[result.dut_no][actual_switch]) temporal_data[result.dut_no][actual_switch] = [`${result.dut_no}`, `${actual_switch}`];
 
 
-      //Make sure to change the data to number if the information is not 'PASS' and/or 'FAIL'
+      // Changes the datatype to number if the information is not 'PASS' and/or 'FAIL'.
       let value = result.result !== 'PASS' && result.result !== 'FAIL' ? parseFloat(result.value) : result.result;
 
       // Usar el valor convertido
       //temporal_data[result.dut_no][actual_switch][active_test_object[result.test_type]] = !isNaN(value) ? value.toFixed(testsViewParameters[result.test_type].decimals) : value;
       temporal_data[result.dut_no][actual_switch][active_test_object[result.test_type]] = result.value ? `${parseFloat(result.value).toFixed(testsViewParameters[result.test_type].decimals)}` : result.result;
+      console.log(temporal_data);
     }
 
     for (let dut_data of temporal_data) {
@@ -590,8 +594,9 @@ const GeneratePdf = ({ testsArray, totals }) => {
         data.push(switch_data.map(value => isNaN(value) ? value : parseFloat(value)));
       }
     }
-
+    console.log({ headers: [headers], data });
     return { headers: [headers], data };
+    
   }
 
   function addTotalsSummary(doc, totals) {
