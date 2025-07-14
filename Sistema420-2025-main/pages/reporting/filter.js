@@ -26,9 +26,14 @@ import Loader from '../../components/loader';
  */
 export default function Filter() {
   const router = useRouter();
-  const [params, setParams] = useState({ id: '', application: 'FINAL', start_datetime1: (new Date()).toISOString().substring(0, 10), start_datetime2: (new Date()).toISOString().substring(0, 10), yield1: 0, yield2: 100 });
+  const [params, setParams] = useState({ filename: '', id: '', application: 'FINAL', start_datetime1: (new Date()).toISOString().substring(0, 10), start_datetime2: (new Date()).toISOString().substring(0, 10), yield1: 0, yield2: 100 });
   const { currentSearch, updateParams } = useTestsStore();
   const [isNewSearch, setIsNewSearch] = useState(false);
+  /*
+    Keeps track of whether the user came from the LabView app to prevent submissions
+    every single time the user 
+  */
+  const [fromApp, setFromApp] = useState(false);
 
   /**
    * Handles form submission, updates search parameters, and triggers a new search.
@@ -36,11 +41,23 @@ export default function Filter() {
    * @param {Event} e - The event object associated with the form submission.
    */
   async function handlerSubmit(e) {
-    e.preventDefault();
+    e?.preventDefault();
     setIsNewSearch(true);
     await updateParams(params);
   }
-
+  // Effect hook to use the URL's filename if there is any.
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('filename')) {
+      setFromApp(true);
+      setParams({ ...params, filename: urlParams.get('filename') });
+    }
+  }, []);
+  useEffect(() => {
+    if (params.filename && fromApp) {
+      handlerSubmit();
+    }
+  }, [params]);
   // Effect hook to navigate to the summary report page after a successful search.
   useEffect(() => {
     if (!isNewSearch) return;
@@ -48,7 +65,10 @@ export default function Filter() {
 
     if (currentSearch.tests.error) return alert(currentSearch.tests.error);
     if (currentSearch.tests.length < 1) return alert('Sorry, there are no tests that matches your params.');
+    // Adds the 'fromApp' flag to the URL if we came from the app.
+    fromApp && router.push('/reporting/summary?fromApp=true');
     router.push('/reporting/summary');
+    
   }, [currentSearch])
 
   return (
