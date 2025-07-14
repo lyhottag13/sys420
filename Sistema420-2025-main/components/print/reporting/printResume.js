@@ -36,7 +36,6 @@ const GeneratePdf = ({ testsArray, totals }) => {
   // State management for printing and options
   const [prePrinting, setPrePrinting] = useState(false);
   const [printing, setPrinting] = useState(false);
-  console.log(testsArray);
   const [options, setOptions] = useState({
     selected_tests: testsArray,
     non_selected_tests: [],
@@ -111,9 +110,11 @@ const GeneratePdf = ({ testsArray, totals }) => {
       const test = options.selected_tests[i];
       const { headers, data } = getRawDataTable(test);
 
-      const worksheet = workbook.addWorksheet(`Hey ${test.id}`);
+      const worksheet = workbook.addWorksheet(`Test ${test.id}`);
 
       // Agrega encabezados (una sola fi       const worksheet = workbook.addWorksheet(`Test ${test.id}`);
+      const [ newHeaders ] = headers;
+      worksheet.addRow(newHeaders);
       data.forEach(row => {
         worksheet.addRow(row);
       });
@@ -162,8 +163,8 @@ const GeneratePdf = ({ testsArray, totals }) => {
 
       if (i < options.selected_tests.length - 1) doc.addPage();
     }
-
     window.open(doc.output("bloburl", { filename: "REPORT" }), "_blank");
+    window.location = '/reporting/filter';
   }
 
   /**
