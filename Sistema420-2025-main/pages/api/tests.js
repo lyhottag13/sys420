@@ -38,13 +38,12 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'At least one filter parameter is required.' });
       }
 
-      const idList = id ? id.split(',').map((i) => parseInt(i)) : [];
-
+      const filenameList = filename ? filename.split(',') : [];
+      console.log(filenameList);
       // Construct dynamic query based on provided filters
       const query = {
-        where: filename ? { filename: filename } : {
+        where: filenameList.length > 0 && filenameList[0] ? { filename: { in: filenameList } } : {
           AND: [
-
             pn ? { pn } : {},
             application ? { application } : {},
             plt ? { plt } : {},

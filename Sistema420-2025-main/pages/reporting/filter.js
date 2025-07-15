@@ -31,7 +31,7 @@ export default function Filter() {
   const [isNewSearch, setIsNewSearch] = useState(false);
   /*
     Keeps track of whether the user came from the LabView app to prevent submissions
-    every single time the user 
+    every single time the user updates the parameters.
   */
   const [fromApp, setFromApp] = useState(false);
 
@@ -45,7 +45,7 @@ export default function Filter() {
     setIsNewSearch(true);
     await updateParams(params);
   }
-  // Effect hook to use the URL's filename if there is any.
+  // Effect hook to use the URL's filename if there is any. This happens when the user comes from the LabView app.
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('filename')) {

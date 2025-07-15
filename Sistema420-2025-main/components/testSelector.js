@@ -53,7 +53,7 @@ export default function TestSelector() {
         isOptionEqualToValue={(option, value) => option.id === value.id}
         onChange={handleChange}
         disableCloseOnSelect
-        inputId="test-select"
+        inputid="test-select"
         PaperComponent={({ children, ...props }) => (
           <Paper
             {...props}

@@ -1,9 +1,9 @@
+'use client';
 import React, { useRef, useState, useEffect } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { saveAs } from "file-saver";
 import ExcelJS from "exceljs";
-
 import PrintIcon from "../../svg/printIcon";
 import PrintOptions from "./printOptions";
 import ParetoChart from "../../pareto/paretoChart";
@@ -82,32 +82,6 @@ const GeneratePdf = ({ testsArray, totals }) => {
     setPrinting(false);
   }, [printing, paretoChartRef, histogramsContainerRef]);
 
-  //Generates an Excel file with selected tests and options.
-  // function generateExcel() {
-  //   // Create a new workbook and add a worksheet
-  //   const workbook = XLSX.utils.book_new();
-
-  //   for(let i in options.selected_tests){
-  //     const { headers, data } = getRawDataTable(options.selected_tests[i]);
-
-  //     const excel_content = [
-  //       ...headers,
-  //       ...data
-  //     ];
-
-  //     console.log(excel_content)
-
-  //     const worksheet = XLSX.utils.aoa_to_sheet(excel_content);
-  //     XLSX.utils.book_append_sheet(workbook, worksheet, ("Test " + options.selected_tests[i].id));
-  //   }
-
-  //   // // Convert the workbook to a binary string
-  //   const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-
-  //   // // Save the file to the user's computer
-  //   const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-  //   saveAs(blob, 'REPORT.xlsx');
-  // }
   async function generateExcel() {
     const workbook = new ExcelJS.Workbook();
 
@@ -144,7 +118,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
       format: "letter",
     });
     doc.setFontSize(12);
-    // Imprime el resumen total al inicio
+    // Imprime el resumen total al inicio si hay mas de una prueba. Otherwise, there is a redundant totals page.
     if (totals && testsArray.length > 1) {
       addTotalsTestSummary(doc, totals, options.selected_tests);
       doc.addPage();
@@ -169,6 +143,12 @@ const GeneratePdf = ({ testsArray, totals }) => {
       if (i < options.selected_tests.length - 1) doc.addPage();
     }
     window.open(doc.output("bloburl", { filename: "REPORT" }), "_blank");
+    /* 
+      Sends the user back to the filter page after printing since the app gets stuck 
+      loading otherwise. However, this only happens when the test to be printed 
+      has the checkboxes inside the printOptions window.
+    */
+    window.location = '/reporting/filter';
   }
 
   /**
