@@ -144,9 +144,8 @@ const GeneratePdf = ({ testsArray, totals }) => {
       format: "letter",
     });
     doc.setFontSize(12);
-
     // Imprime el resumen total al inicio
-    if (totals) {
+    if (totals && testsArray.length > 1) {
       addTotalsTestSummary(doc, totals, options.selected_tests);
       doc.addPage();
     }
@@ -170,8 +169,6 @@ const GeneratePdf = ({ testsArray, totals }) => {
       if (i < options.selected_tests.length - 1) doc.addPage();
     }
     window.open(doc.output("bloburl", { filename: "REPORT" }), "_blank");
-    // Sends the user back to the filter page since the app gets stuck loading otherwise.
-    window.location = '/reporting/filter';
   }
 
   /**
