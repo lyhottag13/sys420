@@ -39,38 +39,27 @@ Project is created with:
 
 ### First Screen
 
-<img src="https://github.com/cotoceid/system-420/blob/main/images/WhatsApp%20Image%202022-08-30%20at%209.31.20%20AM.jpeg" />
+<img src="Sistema420-2025-main\images\WhatsApp Image 2022-08-30 at 9.31.20 AM.jpeg" />
 
 ### Login Screen
 
-<img src="https://github.com/cotoceid/system-420/blob/main/images/WhatsApp%20Image%202022-08-30%20at%209.31.50%20AM.jpeg" />
+<img src="Sistema420-2025-main\images\WhatsApp Image 2022-08-30 at 9.31.50 AM.jpeg" />
 
 ### Specifications Screen
 
-<img src="https://github.com/cotoceid/system-420/blob/main/images/WhatsApp%20Image%202022-08-30%20at%209.32.36%20AM.jpeg" />
+<img src="Sistema420-2025-main\images\WhatsApp Image 2022-08-30 at 9.32.36 AM.jpeg" />
 
 ### Test Results Screen
 
-<img src="https://github.com/cotoceid/system-420/blob/main/images/WhatsApp%20Image%202022-08-30%20at%209.33.24%20AM.jpeg" />
+<img src="Sistema420-2025-main\images\Test Result Screen.jpg" />
 
 ---
 	
 ## Setup
-To run this project...
 
-```
-$ npm i
-$ npx prisma generate
-$ npm run dev
-```
-...to init a developement sample
+To run this project in development mode, click the setup.bat file in the root directory.
 
-```
-$ npm i
-$ npx prisma generate
-$ npm run build
-```
-...to build a deployable instance
+Currently, there is no support for a buildable instance.
 
 ---
 
