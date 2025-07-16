@@ -544,7 +544,6 @@ const GeneratePdf = ({ testsArray, totals }) => {
 
     let active_test_object = {};
     let test_counter = 2; // The number of tests performed on a switch/relay combo. Default is 2 since our two headers push up the queue.
-
     for (let result of selected_test_results) {
       let actual_switch = result.switch;
       // If active_test_object does not contain a header test_type, then it is added to its list.
@@ -574,8 +573,9 @@ const GeneratePdf = ({ testsArray, totals }) => {
       const row = data[i];
       if (row[1] === 0) {
         for (let j = 2; j < row.length; j++) {
+          console.log(row[j]);
           // Adds all the switch = 0 data to the switch = 1 row.
-          if (row[j] && row[j].length > 0) {
+          if (row[j] && toString(row[j]).length > 0) {
             data[i + 1][j] = row[j];
           }
         }
