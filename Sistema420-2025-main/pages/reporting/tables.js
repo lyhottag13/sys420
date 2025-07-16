@@ -164,6 +164,7 @@ export default function Tables() {
       <Head>
         <title>SYSTEM 420 - Raw Data</title>
         <link rel="icon" href="/icon.ico" />
+        <link rel="stylesheet" href="../tailwind.css" />
       </Head>
 
       <Header />

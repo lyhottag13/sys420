@@ -11,7 +11,7 @@ CALL npx prisma db pull --force
 CALL npx prisma generate
 :: Pre-builds the tailwind CSS to force the stylesheet to load.
 echo Pre-building tailwindCSS...
-CALL npx tailwindcss -i ./style.css -o ./pages/tailwind.css --watch
+CALL npx tailwindcss -i ./style.css -o ./public/tailwind.css --watch
 :: Adds the app daemon to pm2.
 set /p newport=What's the desired localhost port?
 echo Generating web.config and adding process to pm2...

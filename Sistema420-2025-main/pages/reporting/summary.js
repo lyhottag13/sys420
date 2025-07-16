@@ -142,6 +142,7 @@ console.log(combinedData);
       <Head>
         <title>SYSTEM 420 - Summary</title>
         <link rel="icon" href="/icon.ico" />
+        <link rel="stylesheet" href="../tailwind.css" />
       </Head>
       <Header />
 
