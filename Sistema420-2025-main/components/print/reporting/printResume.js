@@ -37,9 +37,10 @@ const GeneratePdf = ({ testsArray, totals }) => {
   /* 
     Creates a singleTest array with the totals object properties since we want
     to display the totals for all the tests without having to use the totals
-    page. This way, the single test acts as a total.
+    page. This way, the single test acts as a total. Sometimes, total doesn't
+    exist, so we must add the totals ? check.
   */
-  const singleTest = {
+  const singleTest = totals ? {
     ...clonedTest,
     application: totals.application,
     datecode: totals.datecode,
@@ -61,6 +62,8 @@ const GeneratePdf = ({ testsArray, totals }) => {
     test_time: totals.test_time,
     total_quantity: totals.total_quantity,
     yield: totals.yield
+  } : {
+    ...clonedTest
   };
 
   /*
