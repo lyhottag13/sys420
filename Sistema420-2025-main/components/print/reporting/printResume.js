@@ -32,12 +32,56 @@ const GeneratePdf = ({ testsArray, totals }) => {
   // References for dynamic chart components for PDF generation
   const paretoChartRef = useRef(null);
   const histogramsContainerRef = useRef(null);
+  // Creates a deep clone of the first testsArray object for security on extra properties.
+  const clonedTest = structuredClone(testsArray[0]);
+  /* 
+    Creates a singleTest array with the totals object properties since we want
+    to display the totals for all the tests without having to use the totals
+    page. This way, the single test acts as a total.
+  */
+  const singleTest = {
+    ...clonedTest,
+    application: totals.application,
+    datecode: totals.datecode,
+    elapsed_time: totals.elapsed_time,
+    filename: totals.filename,
+    final_yield: totals.final_yield,
+    id: totals.id,
+    idle_time: totals.idle_time,
+    issue_quantity: totals.issue_quantity,
+    issue_yield: totals.issue_yield,
+    plt: totals.plt,
+    pn: totals.pn,
+    reject_quantity: totals.reject_quantity,
+    relays_failed_420: totals.relays_failed_420,
+    relays_failed_non_420: totals.relays_failed_non_420,
+    relays_passed_420: totals.relays_passed_420,
+    relays_tested: totals.relays_tested,
+    revision: totals.revision,
+    test_time: totals.test_time,
+    total_quantity: totals.total_quantity,
+    yield: totals.yield
+  };
 
+  /*
+    For every consecutive test in the testsArray, this will modify their dut_no's to
+    pick up the count after the last test, so that every single dut_no is unique in the
+    table without losing any data. Otherwise, the overlapping dut_no's will overwrite
+    each other.
+  */
+  for (let i = 1; i < testsArray.length; i++) {
+    const final_dut_no = singleTest.test_result[singleTest.test_result.length - 1].dut_no;
+    const modifiedTestResults = testsArray[i].test_result.map(test => ({ ...test, dut_no: test.dut_no + final_dut_no }));
+    singleTest.test_result = [...singleTest.test_result, ...modifiedTestResults];
+  }
+  console.log(singleTest);
+  // Puts the singleTest in an array, since methods depend on the tests being in an array.
+  const singleTestWrapper = [singleTest];
   // State management for printing and options
   const [prePrinting, setPrePrinting] = useState(false);
   const [printing, setPrinting] = useState(false);
   const [options, setOptions] = useState({
-    selected_tests: testsArray,
+    selected_tests: singleTestWrapper,
     non_selected_tests: [],
     include_summary: true,
     include_charts: true,
@@ -49,7 +93,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
   useEffect(() => {
     setOptions(prev => ({
       ...prev,
-      selected_tests: testsArray
+      selected_tests: singleTestWrapper
     }));
     // If the URL has fromApp, then we will automatically start the printing process.
     const urlParams = new URLSearchParams(window.location.search);
@@ -118,11 +162,6 @@ const GeneratePdf = ({ testsArray, totals }) => {
       format: "letter",
     });
     doc.setFontSize(12);
-    // Imprime el resumen total al inicio si hay mas de una prueba. Otherwise, there is a redundant totals page.
-    if (totals && testsArray.length > 1) {
-      addTotalsTestSummary(doc, totals, options.selected_tests);
-      doc.addPage();
-    }
 
     for (let i in options.selected_tests) {
       if (options.include_summary) {
@@ -573,7 +612,6 @@ const GeneratePdf = ({ testsArray, totals }) => {
       const row = data[i];
       if (row[1] === 0) {
         for (let j = 2; j < row.length; j++) {
-          console.log(row[j]);
           // Adds all the switch = 0 data to the switch = 1 row.
           if (row[j] && toString(row[j]).length > 0) {
             data[i + 1][j] = row[j];
@@ -583,7 +621,6 @@ const GeneratePdf = ({ testsArray, totals }) => {
         data.splice(i, 1);
       }
     }
-    console.log(data); // Debug.
     return { headers: [headers], data };
 
   }

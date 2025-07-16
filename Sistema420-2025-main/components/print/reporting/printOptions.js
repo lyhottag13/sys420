@@ -96,7 +96,6 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
 
   //Initiates the printing process if valid options are selected.
   const printButtonHandler = (e) => {
-    console.log(options);
     e.preventDefault();
     if (!options.include_summary && !options.include_charts && !options.include_raw_data) return;
     if (!options.selected_tests.length) return;
