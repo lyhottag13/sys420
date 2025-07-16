@@ -3,12 +3,18 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 
 cd Sistema420-2025-main
 :: Clean installs everything so that there's less risk with dependencies updating.
+echo Clean installing node_modules...
 CALL npm.cmd ci
 :: Generates the prisma tool from the schema.
+echo Generating Prisma...
 CALL npx prisma db pull --force
 CALL npx prisma generate
+:: Pre-builds the tailwind CSS to force the stylesheet to load.
+echo Pre-building tailwindCSS...
+CALL npx tailwindcss -i ./style.css -o ./pages/tailwind.css --watch
 :: Adds the app daemon to pm2.
 set /p newport=What's the desired localhost port?
+echo Generating web.config and adding process to pm2...
 echo ^<?xml version="1.0" encoding="UTF-8"?^> > web.config
 echo ^<configuration^> >> web.config
 echo  ^<system.webServer^> >> web.config
