@@ -175,7 +175,6 @@ const GeneratePdf = ({ testsArray, totals }) => {
       if (options.include_charts) {
 
         addHistograms(doc, histogramsContainerRef.current.children[i].children[0], options.selected_tests[i], options.highlighted_test_types);
-
         if (options.include_raw_data) doc.addPage();
       }
       if (options.include_raw_data) {
@@ -444,16 +443,8 @@ const GeneratePdf = ({ testsArray, totals }) => {
 
     function insertHistogramCanvas(htmlReference) {
       if (htmlReference.localName === "canvas") {
-
         const test_type = htmlReference.attributes.test_type ? htmlReference.attributes.test_type.nodeValue : "";
         if (test_seleccionados.length === 0 || test_seleccionados.includes(test_type)) {
-          if (y > maxChartHeight) {
-            y = initialY;
-            xIteration = 0;
-            doc.addPage();
-            addHeader(doc, test);
-          }
-
           // Si es gráfico grande, siempre usar xCoord[0], si pequeño usar alternancia
           const x = isLargeChart ? xCoord[0] : xCoord[xIteration];
 
@@ -513,11 +504,13 @@ const GeneratePdf = ({ testsArray, totals }) => {
       doc.setFont(undefined, "normal");
       y += fontSize;
       insertHistogramCanvas(switchContainer);
-
+      
       if (y > maxChartHeight) {
+        // Adds a new page and resets the chart y and x positions so there is no chart overlap.
         y = initialY;
         xIteration = 0;
-        // addHeader(doc, test);
+        doc.addPage();
+        addHeader(doc, test);
       } else {
         if (!isLargeChart) {
           y += distanceChartY;
