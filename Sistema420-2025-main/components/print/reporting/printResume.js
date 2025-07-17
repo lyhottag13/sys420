@@ -155,7 +155,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
 
-    saveAs(blob, 'REPORT.xlsx');
+    saveAs(blob, `${options.selected_tests[0].filename}.xlsx`);
   }
 
   //Generates a PDF report with selected tests and options.
@@ -183,7 +183,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
 
       if (i < options.selected_tests.length - 1) doc.addPage();
     }
-    window.open(doc.output("bloburl", { filename: "REPORT" }), "_blank");
+    doc.save(options.selected_tests[0].filename);
     /* 
       Sends the user back to the filter page after printing since the app gets stuck 
       loading otherwise. However, this only happens when the test to be printed 
@@ -504,7 +504,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
       doc.setFont(undefined, "normal");
       y += fontSize;
       insertHistogramCanvas(switchContainer);
-      
+
       if (y > maxChartHeight) {
         // Adds a new page and resets the chart y and x positions so there is no chart overlap.
         y = initialY;
