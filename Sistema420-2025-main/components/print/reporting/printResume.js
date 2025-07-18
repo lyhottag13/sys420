@@ -135,8 +135,8 @@ const GeneratePdf = ({ testsArray, totals }) => {
     for (let i in options.selected_tests) {
       const test = options.selected_tests[i];
       const { headers, data } = getRawDataTable(test);
-
-      const worksheet = workbook.addWorksheet(`Test ${test.id}`);
+      // Affects the worksheet name. Dynamically adds 'Tests' instead of 'Test' if multiple tests exist.
+      const worksheet = workbook.addWorksheet(`Test${test.filename.includes(',') ? 's' : ''} ${test.filename}`);
 
       // Agrega encabezados (una sola fi       const worksheet = workbook.addWorksheet(`Test ${test.id}`);
       const [newHeaders] = headers;
