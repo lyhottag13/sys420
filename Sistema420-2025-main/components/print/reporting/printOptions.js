@@ -215,7 +215,7 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
 
                 <div className='flex flex-col items-center'>
                   <h3 className='text-sm'>Selected Tests</h3>
-                  <select ref={selectedTestsRef} size="6" id="selectedTests" name="selectedTests" className="py-1 px-3 border border-gray-400 w-36 " multiple>
+                  <select ref={selectedTestsRef} size="6" id="selectedTests" name="selectedTests" className="py-1 px-3 border border-gray-400 w-36 " style={{ height: '155px' }} multiple>
                     {
                       options.selected_tests.map((t) => (<option key={`option-test-${t.id}`} value={t.id}>{t.filename}</option>))
                     }
