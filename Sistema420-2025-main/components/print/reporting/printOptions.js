@@ -236,47 +236,6 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
                 <input defaultChecked={options.include_charts} onClick={chartsCheckboxChangeHandler} id="histograms-checkbox" name="histograms-checkbox" type="checkbox" />
                 <label htmlFor="histograms-checkbox">Histograms</label>
               </div>
-              {options.include_charts && options.selected_tests.length > 0 && (
-                <div className="mt-2">
-                  <p className="font-medium text-sm">Highlight test types in histograms:</p>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 mt-2 text-sm">
-                    {
-                      Array.from(
-                        new Set(
-                          options.selected_tests.flatMap(t =>
-                            t.test_result?.map(r => r.test_type) || []
-                          )
-                        )
-                      )
-                        .filter(testType =>
-                          testsViewParameters[testType] && testsViewParameters[testType].units
-                        )
-                        .map(testType => {
-                          const params = testsViewParameters[testType];
-                          return (
-                            <label key={testType} className="flex items-center gap-x-2">
-                              <input
-                                type="checkbox"
-                                checked={options.highlighted_test_types?.includes(params.name) || false}
-                                onChange={(e) => {
-                                  const value = e.target.value;
-                                  const newOptions = { ...options };
-                                  const current = newOptions.highlighted_test_types || [];
-                                  newOptions.highlighted_test_types = e.target.checked
-                                    ? [...current, value]
-                                    : current.filter(t => t !== value);
-                                  setOptions(newOptions);
-                                }}
-                                value={params.name}
-                              />
-                              {params.name || testType}
-                            </label>
-                          )
-                        })
-                    }
-                  </div>
-                </div>
-              )}
 
               <div className='flex flex-row gap-x-2 items-center'>
                 <input checked={options.include_raw_data} onChange={rawdataCheckboxChangeHandler} id="rawdata-checkbox" name="rawdata-checkbox" type="checkbox" />
