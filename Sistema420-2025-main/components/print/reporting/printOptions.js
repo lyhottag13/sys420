@@ -194,37 +194,6 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
           <CloseIcon className="w-6 stroke-current text-black hover:text-red-500 hover:cursor-pointer absolute right-0" />
         </div>
         <div className="flex flex-col gap-y-5 items-center overflow-y-scroll md:overflow-y-visible" style={{ maxHeight: "75vh" }}>
-          {
-            !isUnique &&
-            <div className='flex flex-col gap-y-1 items-center'>
-              <p>Select the test filenames to include in the pdf</p>
-              <div className="flex flex-col md:flex-row justify-between items-center gap-x-5">
-                <div className='flex flex-col items-center'>
-                  <h3 className='text-sm'>Non selected Tests</h3>
-                  <select ref={nonSelectedTestsRef} size="6" id="nonSelectedTests" name="nonSelectedTests" className="py-1 px-3 border border-gray-400 w-36 " multiple>
-                    {
-                      options.non_selected_tests.map((t) => (<option key={`option-test-${t.id}`} value={t.id}>{t.filename}</option>))
-                    }
-                  </select>
-                </div>
-
-                <div className="flex flex-row md:flex-col gap-y-3 gap-x-3">
-                  <div onClick={addButtonHandler}><RightArrowIcon className="w-7 fill-current text-black hover:cursor-pointer hover:text-green-300 rotate-90 md:rotate-0" /></div>
-                  <div onClick={removeButtonHandler}><RightArrowIcon className="w-7 fill-current text-black hover:cursor-pointer hover:text-red-300 -rotate-90 md:rotate-180" /></div>
-                </div>
-
-                <div className='flex flex-col items-center'>
-                  <h3 className='text-sm'>Selected Tests</h3>
-                  <select ref={selectedTestsRef} size="6" id="selectedTests" name="selectedTests" className="py-1 px-3 border border-gray-400 w-36 " style={{ height: '155px' }} multiple>
-                    {
-                      options.selected_tests.map((t) => (<option key={`option-test-${t.id}`} value={t.id}>{t.filename}</option>))
-                    }
-                  </select>
-                </div>
-              </div>
-            </div>
-          }
-
           <div className='flex flex-col items-center'>
             <p>Select the areas to include in the summary.</p>
             <div>

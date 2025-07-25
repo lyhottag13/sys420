@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTestsStore } from "../store/testsContext";
 import {
   Checkbox,
@@ -10,7 +10,6 @@ import Autocomplete from "@mui/material/Autocomplete";
 export default function TestSelector() {
   const { currentSearch, toggleTestSelection } = useTestsStore();
   const [inputValue, setInputValue] = useState("");
-
   if (!currentSearch.tests || currentSearch.tests.length === 0) {
     return <p>No tests available</p>;
   }
@@ -22,7 +21,14 @@ export default function TestSelector() {
     );
     toggleTestSelection(selected);
   };
-
+  // Selects every test initially since the user usually uses all the tests selected.
+  const selectAll = () => {
+    const selected = currentSearch.tests;
+    toggleTestSelection(selected);
+  }
+  useEffect(() => {
+    selectAll();
+  }, [])
   // Filtra las opciones según el inputValue
   const filteredOptions = currentSearch.tests.filter(
     (test) =>
@@ -30,7 +36,6 @@ export default function TestSelector() {
         .toLowerCase()
         .includes(inputValue.toLowerCase())
   );
-
   return (
     <div>
       <TextField
