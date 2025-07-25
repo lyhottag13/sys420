@@ -579,8 +579,13 @@ const GeneratePdf = ({ testsArray, totals }) => {
 
     let active_test_object = {};
     let test_counter = 2; // The number of tests performed on a switch/relay combo. Default is 2 since our two headers push up the queue.
+    let max_switch = 0; // Tracks the maximum number of switches being tested.
     for (let result of selected_test_results) {
       let actual_switch = result.switch;
+      // Increments the max_switch is result.switch is greater.
+      if (result.switch > max_switch) {
+        max_switch = result.switch;
+      }
       // If active_test_object does not contain a header test_type, then it is added to its list.
       if (!active_test_object[result.test_type]) {
         headers.push(testsViewParameters[result.test_type].short_name);
@@ -599,22 +604,23 @@ const GeneratePdf = ({ testsArray, totals }) => {
       if (!dut_data) continue;
       for (let switch_data of dut_data) {
         if (!switch_data) continue;
-        //data.push(switch_data);
         data.push(switch_data.map(value => isNaN(value) ? value : parseFloat(value)));
       }
     }
-    // Eliminates all rows where switch = 0 and combines them with the switch = 1 rows.
-    for (let i = 0; i < data.length; i++) {
-      const row = data[i];
-      if (row[1] === 0) {
-        for (let j = 2; j < row.length; j++) {
-          // Adds all the switch = 0 data to the switch = 1 row.
-          if (row[j] && toString(row[j]).length > 0) {
-            data[i + 1][j] = row[j];
+    if (max_switch > 0) {
+      // Eliminates all rows where switch = 0 and combines them with the switch = 1 rows if there's more than 0 switch tests.
+      for (let i = 0; i < data.length; i++) {
+        const row = data[i];
+        if (row[1] === 0) {
+          for (let j = 2; j < row.length; j++) {
+            // Adds all the switch = 0 data to the switch = 1 row.
+            if (row[j] && toString(row[j]).length > 0) {
+              data[i + 1][j] = row[j];
+            }
           }
+          // Deletes the switch = 0 row.
+          data.splice(i, 1);
         }
-        // Deletes the switch = 0 row.
-        data.splice(i, 1);
       }
     }
     return { headers: [headers], data };
