@@ -77,7 +77,6 @@ const GeneratePdf = ({ testsArray, totals }) => {
     const modifiedTestResults = testsArray[i].test_result.map(test => ({ ...test, dut_no: test.dut_no + final_dut_no }));
     singleTest.test_result = [...singleTest.test_result, ...modifiedTestResults];
   }
-  console.log(singleTest);
   // Puts the singleTest in an array, since methods depend on the tests being in an array.
   const singleTestWrapper = [singleTest];
   // State management for printing and options
@@ -277,7 +276,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
     addTextOnRow(doc, `${test.type_of_test}`, 0, 230);             //type_of_test
     addTextOnRow(doc, `${test.pn}\n${test.application}\n${test.revision}`, 1, 73);
     addTextOnRow(doc, `${test.plt}\n${test.lot_number}\n${test.datecode}`, 1, 250);
-    addTextOnRow(doc, `${test.filename}\n${formattedDate}\n${test.start_datetime.slice(11, 19)}`, 1, 485);
+    addTextOnRow(doc, `${test.filename.split(',')[0]}\n${formattedDate}\n${test.start_datetime.slice(11, 19)}`, 1, 485);
     doc.line(22.6, 90, 586.7, 90);
   }
 
@@ -596,7 +595,6 @@ const GeneratePdf = ({ testsArray, totals }) => {
       if (!temporal_data[result.dut_no][actual_switch]) temporal_data[result.dut_no][actual_switch] = [`${result.dut_no}`, `${actual_switch}`];
 
       // Usar el valor convertido
-      //temporal_data[result.dut_no][actual_switch][active_test_object[result.test_type]] = !isNaN(value) ? value.toFixed(testsViewParameters[result.test_type].decimals) : value;
       temporal_data[result.dut_no][actual_switch][active_test_object[result.test_type]] = result.value ? `${parseFloat(result.value).toFixed(testsViewParameters[result.test_type].decimals)}` : result.result;
     }
 
@@ -607,70 +605,44 @@ const GeneratePdf = ({ testsArray, totals }) => {
         data.push(switch_data.map(value => isNaN(value) ? value : parseFloat(value)));
       }
     }
+    /*
+    Only triggers if this group of tests had any switch tests. However, there
+    is a chance a user might combine tests with different switch amounts, so
+    I've included additional checks to prevent the generation from crashing.
+    */
     if (max_switch > 0) {
-      // Eliminates all rows where switch = 0 and combines them with the switch = 1 rows if there's more than 0 switch tests.
-      for (let i = 0; i < data.length; i++) {
-        const row = data[i];
-        if (row[1] === 0) {
-          for (let j = 2; j < row.length; j++) {
-            // Adds all the switch = 0 data to the switch = 1 row.
-            if (row[j] && toString(row[j]).length > 0) {
-              data[i + 1][j] = row[j];
-            }
+      combineSwitchZeroTests(data);
+    }
+    return { headers: [headers], data };
+  }
+
+  /**
+   * Eliminates all rows where switch = 0 and combines them with the switch = 1
+   * rows. There are various validations within the function to prevent unnecessary
+   * trimming. This function expects all the tests to have the same number of
+   * switches, though it's possible a user may combine a 0 switch with a 4 switch,
+   * so there are validations to account for that, too.
+   */
+  function combineSwitchZeroTests(data) {
+    for (let row = 0; row < data.length; row++) {
+      const currentRow = data[row];
+      const nextRow = data[row + 1];
+      const switchNumber = currentRow[1];
+      if (switchNumber === 0) {
+        // We skip the first two columns since they include non-test data (dut_no and switch).
+        for (let column = 2; column < currentRow.length; column++) {
+          // Adds all the switch = 0 data to the switch = 1 row if it's valid and nextRow exists.
+          if (currentRow[column] && toString(currentRow[column]).length > 0 && nextRow) {
+            nextRow[column] = currentRow[column];
           }
-          // Deletes the switch = 0 row.
-          data.splice(i, 1);
+        }
+        // Deletes the switch = 0 row if nextRow exists and nextRow's switch isn't 0.
+        if (nextRow && nextRow[1] !== 0) {
+          data.splice(row, 1);
         }
       }
     }
-    return { headers: [headers], data };
-
-  }
-
-  function addTotalsSummary(doc, totals) {
-    doc.setFont(undefined, "bold");
-    addCenteredTextOnRow(doc, "TOTALS SUMMARY", 2);
-    doc.setFont(undefined, "normal");
-
-    let row = 4;
-    addTextOnRow(doc, "Relays tested:", row, 100);
-    addTextOnRowLtR(doc, `${totals.relays_tested}`, row, 300);
-    row++;
-    addTextOnRow(doc, "Relays passed:", row, 100);
-    addTextOnRowLtR(doc, `${totals.relays_passed_420}`, row, 300);
-    row++;
-    addTextOnRow(doc, "Relays failed:", row, 100);
-    addTextOnRowLtR(doc, `${totals.relays_failed_420}`, row, 300);
-    row++;
-    addTextOnRow(doc, "Yield:", row, 100);
-    addTextOnRowLtR(doc, `${totals.yield}%`, row, 300);
-    row++;
-    addTextOnRow(doc, "Non 420 rejects:", row, 100);
-    addTextOnRowLtR(doc, `${totals.relays_failed_non_420}`, row, 300);
-    row++;
-    addTextOnRow(doc, "Total quantity:", row, 100);
-    addTextOnRowLtR(doc, `${totals.total_quantity}`, row, 300);
-    row++;
-    addTextOnRow(doc, "Reject quantity:", row, 100);
-    addTextOnRowLtR(doc, `${totals.reject_quantity}`, row, 300);
-    row++;
-    addTextOnRow(doc, "Final yield:", row, 100);
-    addTextOnRowLtR(doc, `${totals.final_yield}%`, row, 300);
-    row++;
-    addTextOnRow(doc, "Issue quantity:", row, 100);
-    addTextOnRowLtR(doc, `${totals.issue_quantity}`, row, 300);
-    row++;
-    addTextOnRow(doc, "Issue yield:", row, 100);
-    addTextOnRowLtR(doc, `${totals.issue_yield}%`, row, 300);
-    row++;
-    addTextOnRow(doc, "Elapsed time:", row, 100);
-    addTextOnRowLtR(doc, `${totals.elapsed_time}`, row, 300);
-    row++;
-    addTextOnRow(doc, "Idle time:", row, 100);
-    addTextOnRowLtR(doc, `${totals.idle_time}`, row, 300);
-    row++;
-    addTextOnRow(doc, "Test time:", row, 100);
-    addTextOnRowLtR(doc, `${totals.test_time}`, row, 300);
+    return data;
   }
 
   return (
@@ -707,40 +679,14 @@ const GeneratePdf = ({ testsArray, totals }) => {
 
           {
 
-            //  options.selected_tests.filter(test => options.highlighted_tests_types?.includes(test.id)).map((test)=>(
             options.selected_tests.map((test) => (
               <div key={`histogram-main-container-test${test.id}`} style={{ maxWidth: "none", maxHeight: "none", height: "270px", width: "600px" }}>
-                {/* <MainHistogramContainer hideFails={ !options.include_fails } selectedTest={test} printing={true}/> */
-                  <MainHistogramContainer hideFails={!options.include_fails} selectedTest={!options.highlighted_tests_types ? test : options.highlighted_tests_types} printing={true} />}
+                {<MainHistogramContainer hideFails={!options.include_fails} selectedTest={!options.highlighted_tests_types ? test : options.highlighted_tests_types} printing={true} />}
               </div>
             ))
           }
         </div>
       }
-      {/* {
-  printing &&
-  <div ref={histogramsContainerRef}>
-    {
-      options.highlighted_test_types == null
-      ? options.selected_tests.map((test) => (
-          <div
-            key={`histogram-main-container-test${test.id}`}
-            style={{ maxWidth: "none", maxHeight: "none", height: "270px", width: "600px" }}
-          >
-            <MainHistogramContainer hideFails={!options.include_fails} selectedTest={test} printing={true} />
-          </div>
-        ))
-      : options.highlighted_test_types.map((test) => (
-          <div
-            key={`histogram-main-container-test${test.id}`}
-            style={{ maxWidth: "none", maxHeight: "none", height: "270px", width: "600px" }}
-          >
-            <MainHistogramContainer hideFails={!options.include_fails} selectedTest={test} printing={true} />
-          </div>
-        ))
-    }
-  </div>
-} */}
     </div>
   );
 };

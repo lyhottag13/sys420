@@ -53,88 +53,89 @@ export default function Summary() {
   // If no tests are selected, show NotFound
   // if (!selectedTestObjects || selectedTestObjects.length === 0)
   //   return <NotFound />;
-
- const totalRelaysTested = selectedTestObjects.reduce(
-  (acc, test) => acc + Number(test.relays_tested || 0),
-  0
-);
-const totalRelaysPassed = selectedTestObjects.reduce(
-  (acc, test) => acc + Number(test.relays_passed_420 || 0),
-  0
-);
-
-const totalFinalYield = selectedTestObjects.reduce(
-  (acc, test) => acc + Number(test.final_yield || 0),
-  0
-);
-const totalIssueYield = selectedTestObjects.reduce(
-  (acc, test) => acc + Number(test.issue_yield || 0),
-  0
-);
-
-const combinedData = {
-  filename: selectedTestObjects.map(t => t.filename).join(", "),
-  id: selectedTestObjects.map(t => t.id).join(", "),
-  plt: selectedTestObjects.map(t => t.plt).join(", "),
-  datecode: selectedTestObjects.map(t => t.datecode).join(", "),
-  pn: selectedTestObjects[0]?.pn || "",
-  application: selectedTestObjects[0]?.application || "",
-  revision: selectedTestObjects[0]?.revision || "",
-  relays_tested: totalRelaysTested,
-  relays_passed_420: totalRelaysPassed,
-  relays_failed_420: selectedTestObjects.reduce(
-    (acc, test) => acc + Number(test.relays_failed_420 || 0),
+  console.log(selectedTestObjects);
+  const totalRelaysTested = selectedTestObjects.reduce(
+    (acc, test) => acc + Number(test.relays_tested || 0),
     0
-  ),
-  yield:
-    totalRelaysTested > 0
-      ? Math.round((totalRelaysPassed / totalRelaysTested) * 100)
-      : 0,
-  relays_failed_non_420: selectedTestObjects.reduce(
+  );
+  const totalRelaysPassed = selectedTestObjects.reduce(
+    (acc, test) => acc + Number(test.relays_passed_420 || 0),
+    0
+  );
+
+  const totalFinalYield = selectedTestObjects.reduce(
+    (acc, test) => acc + Number(test.final_yield || 0),
+    0
+  );
+  const totalIssueYield = selectedTestObjects.reduce(
+    (acc, test) => acc + Number(test.issue_yield || 0),
+    0
+  );
+  const totalRelaysFailedNon420 = selectedTestObjects.reduce(
     (acc, test) => acc + Number(test.relays_failed_non_420 || 0),
     0
-  ),
-  total_quantity: selectedTestObjects.reduce(
-    (acc, test) => acc + Number(test.total_quantity || 0),
+  );
+  const totalRelaysFailed = selectedTestObjects.reduce(
+    (acc, test) => acc + Number(test.relays_failed_420 || 0),
     0
-  ),
-  reject_quantity: selectedTestObjects.reduce(
-    (acc, test) => acc + Number(test.reject_quantity || 0),
-    0
-  ),
-  // Final yield promedio (o puedes hacer ponderado si tienes cantidad)
-  final_yield:
-    selectedTestObjects.length > 0
-      ? Math.round(totalFinalYield / selectedTestObjects.length)
-      : 0,
-  issue_quantity: selectedTestObjects.reduce(
-    (acc, test) => acc + Number(test.issue_quantity || 0),
-    0
-  ),
-  // Issue yield promedio (o puedes hacer ponderado si tienes cantidad)
-  issue_yield:
-    selectedTestObjects.length > 0
-      ? Math.round(totalIssueYield / selectedTestObjects.length)
-      : 0,
-  elapsed_time: secondsToTimeString(
-    selectedTestObjects.reduce(
-      (acc, test) => acc + timeStringToSeconds(test.elapsed_time),
+  );
+  const combinedData = {
+    filename: selectedTestObjects.map(t => t.filename).join(", "),
+    id: selectedTestObjects.map(t => t.id).join(", "),
+    plt: selectedTestObjects.map(t => t.plt).join(", "),
+    datecode: selectedTestObjects.map(t => t.datecode).join(", "),
+    pn: selectedTestObjects[0]?.pn || "",
+    application: selectedTestObjects[0]?.application || "",
+    revision: selectedTestObjects[0]?.revision || "",
+    relays_tested: totalRelaysTested,
+    relays_passed_420: totalRelaysPassed,
+    relays_failed_420: totalRelaysFailed,
+    yield:
+      totalRelaysTested > 0
+        ? Math.round((totalRelaysPassed / totalRelaysTested) * 100)
+        : 0,
+    relays_failed_non_420: totalRelaysFailedNon420,
+    total_quantity: selectedTestObjects.reduce(
+      (acc, test) => acc + Number(test.total_quantity || 0),
       0
-    )
-  ),
-  idle_time: secondsToTimeString(
-    selectedTestObjects.reduce(
-      (acc, test) => acc + timeStringToSeconds(test.idle_time),
+    ),
+    reject_quantity: selectedTestObjects.reduce(
+      (acc, test) => acc + Number(test.reject_quantity || 0),
       0
-    )
-  ),
-  test_time: secondsToTimeString(
-    selectedTestObjects.reduce(
-      (acc, test) => acc + timeStringToSeconds(test.test_time),
+    ),
+    // Final yield promedio (o puedes hacer ponderado si tienes cantidad)
+    final_yield:
+      selectedTestObjects.length > 0
+        ? Math.round(100 - ((totalRelaysFailed + totalRelaysFailedNon420) / (totalRelaysTested + totalRelaysFailedNon420)) * 100)
+        : 0,
+    issue_quantity: selectedTestObjects.reduce(
+      (acc, test) => acc + Number(test.issue_quantity || 0),
       0
-    )
-  ),
-};
+    ),
+    // Issue yield promedio (o puedes hacer ponderado si tienes cantidad)
+    issue_yield:
+      selectedTestObjects.length > 0
+        ? Math.round(totalIssueYield / selectedTestObjects.length)
+        : 0,
+    elapsed_time: secondsToTimeString(
+      selectedTestObjects.reduce(
+        (acc, test) => acc + timeStringToSeconds(test.elapsed_time),
+        0
+      )
+    ),
+    idle_time: secondsToTimeString(
+      selectedTestObjects.reduce(
+        (acc, test) => acc + timeStringToSeconds(test.idle_time),
+        0
+      )
+    ),
+    test_time: secondsToTimeString(
+      selectedTestObjects.reduce(
+        (acc, test) => acc + timeStringToSeconds(test.test_time),
+        0
+      )
+    ),
+  };
 
   return (
     <div className="flex flex-col items-center justify-between min-h-screen overflow-hidden">
@@ -151,10 +152,10 @@ const combinedData = {
         </div>
         <label htmlFor="test-select">Select Test</label>
         <TestSelector />
-        
 
-       
-       
+
+
+
         {/* Totals Section */}
         <div className="w-full flex flex-col items-center my-8">
           <h2 className="text-4xl font-bold">Test Summary</h2>
@@ -175,17 +176,17 @@ const combinedData = {
               <div className="flex flex-col items-center space-y-1">
                 <h3 className="font-bold">COTO Technology</h3>
                 <p>
-  START DATE:{" "}
-  {selectedTestObjects[0]?.start_datetime
-    ? formatDate(selectedTestObjects[0].start_datetime.slice(0, 10))
-    : ""}
-</p>
-<p>
-  START TIME:{" "}
-  {selectedTestObjects[0]?.start_datetime
-    ? selectedTestObjects[0].start_datetime.slice(11, 19)
-    : ""}
-</p>
+                  START DATE:{" "}
+                  {selectedTestObjects[0]?.start_datetime
+                    ? formatDate(selectedTestObjects[0].start_datetime.slice(0, 10))
+                    : ""}
+                </p>
+                <p>
+                  START TIME:{" "}
+                  {selectedTestObjects[0]?.start_datetime
+                    ? selectedTestObjects[0].start_datetime.slice(11, 19)
+                    : ""}
+                </p>
               </div>
             </div>
 
