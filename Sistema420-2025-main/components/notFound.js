@@ -17,8 +17,8 @@ export default function NotFound() {
         </p>
         <p className="text-xl md:text-2xl">
           Go back to:
-          <Link href="/">
-            <a className="ml-2 underline hover:text-red-900">Index</a>
+          <Link href="/" className="ml-2 underline hover:text-red-900">
+            Index
           </Link>
         </p>
       </div>

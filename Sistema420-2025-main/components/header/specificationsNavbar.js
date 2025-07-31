@@ -17,10 +17,8 @@ export default function SpecificationsNavbar() {
     <>
       {
         specifications.pn && 
-          <Link href={{ pathname: "/specifications/viewSpecs" }} legacyBehavior>
-            <a className="w-full py-3 px-4 semibold hover:cursor-pointer hover:text-white hover:bg-red-900 lg:w-auto lg:text-white lg:py-4 lg:px-5 lg:hover:text-white lg:hover:bg-red-800 lg:text-2xl">
+          <Link href={{ pathname: "/specifications/viewSpecs" }} className="w-full py-3 px-4 semibold hover:cursor-pointer hover:text-white hover:bg-red-900 lg:w-auto lg:text-white lg:py-4 lg:px-5 lg:hover:text-white lg:hover:bg-red-800 lg:text-2xl">
               View Specifications
-            </a>
           </Link>
       }
       {
@@ -29,26 +27,20 @@ export default function SpecificationsNavbar() {
           {
             specifications.pn && 
             <>
-              <Link href={{ pathname: "/specifications/updateSpecs" }} legacyBehavior>
-                <a className="w-full py-3 px-4 semibold hover:cursor-pointer hover:text-white hover:bg-red-900 lg:w-auto lg:text-white lg:py-4 lg:px-5 lg:hover:text-white lg:hover:bg-red-800 lg:text-2xl">
+              <Link href={{ pathname: "/specifications/updateSpecs" }} className="w-full py-3 px-4 semibold hover:cursor-pointer hover:text-white hover:bg-red-900 lg:w-auto lg:text-white lg:py-4 lg:px-5 lg:hover:text-white lg:hover:bg-red-800 lg:text-2xl">
                   Update Specifications
-                </a>
               </Link>
             </>
           }
           
         </>
       }
-      <Link href={{ pathname: "/specifications/filter" }} legacyBehavior>
-        <a className="w-full py-3 px-4 semibold hover:cursor-pointer hover:text-white hover:bg-red-900 lg:w-auto lg:text-white lg:py-4 lg:px-5 lg:hover:text-white lg:hover:bg-red-800 lg:text-2xl">
+      <Link href={{ pathname: "/specifications/filter" }} className="w-full py-3 px-4 semibold hover:cursor-pointer hover:text-white hover:bg-red-900 lg:w-auto lg:text-white lg:py-4 lg:px-5 lg:hover:text-white lg:hover:bg-red-800 lg:text-2xl">
           Filter
-        </a>
       </Link>
 
-      <Link href={{ pathname: "/specifications/createSpecs" }} legacyBehavior>
-            <a className="w-full py-3 px-4 semibold hover:cursor-pointer hover:text-white hover:bg-red-900 lg:w-auto lg:text-white lg:py-4 lg:px-5 lg:hover:text-white lg:hover:bg-red-800 lg:text-2xl">
+      <Link href={{ pathname: "/specifications/createSpecs" }} className="w-full py-3 px-4 semibold hover:cursor-pointer hover:text-white hover:bg-red-900 lg:w-auto lg:text-white lg:py-4 lg:px-5 lg:hover:text-white lg:hover:bg-red-800 lg:text-2xl">
               Create Specifications
-            </a>
       </Link>
 
 

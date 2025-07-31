@@ -35,18 +35,14 @@ export default function UserMenu(){
                         Log Out
                     </a>
                     :
-                    <Link href = {{ pathname: "/login", query: { lastPath:  router.pathname == "/login"? router.query.lastPath : router.pathname } }} legacyBehavior>
-                        <a className="px-4 hover:cursor-pointer lg:text-white  py-2 lg:px-3 w-full lg:hover:bg-white lg:hover:text-black whitespace-nowrap">
+                    <Link href = {{ pathname: "/login", query: { lastPath:  router.pathname == "/login"? router.query.lastPath : router.pathname } }} className="px-4 hover:cursor-pointer lg:text-white  py-2 lg:px-3 w-full lg:hover:bg-white lg:hover:text-black whitespace-nowrap">
                             Log In
-                        </a>
                     </Link>
                 }
                 {
                     ( user.user_type == "ADMIN" || user.user_type == "admin" ) &&
-                    <Link href="/createUser" legacyBehavior>
-                        <a className="hover:cursor-pointer lg:text-white  py-2 px-3 w-full lg:hover:bg-white lg:hover:text-black whitespace-nowrap">
+                    <Link href="/createUser" className="hover:cursor-pointer lg:text-white  py-2 px-3 w-full lg:hover:bg-white lg:hover:text-black whitespace-nowrap">
                             Create User
-                        </a>
                     </Link>
                 }
             </nav>

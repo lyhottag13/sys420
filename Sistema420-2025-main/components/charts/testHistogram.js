@@ -24,13 +24,7 @@ ChartJS.register(
   annotationPlugin,
 );
 
-// Dynamically imports a CLIENT-ONLY import because otherwise the whole app can't build.
-useEffect(() => {
-  (async () => {
-    const zoomPlugin = await import('chartjs-plugin-zoom');
-    ChartJS.register(zoomPlugin.default);
-  })();
-}, []);
+
 
 /**
  * Rounds a number to a specified number of decimal places.
@@ -195,6 +189,14 @@ function getChartDataSet(testArray, testType, params, zoomRange) {
 export default function TestHistogram({ params, printing, hideFails, testArray, testType }) {
   const initialMin = parseFloat(testsViewParameters[testType].min_view(params));
   const initialMax = parseFloat(testsViewParameters[testType].max_view(params));
+
+  // Dynamically imports a CLIENT-ONLY import because otherwise the whole app can't build.
+  useEffect(() => {
+    (async () => {
+      const zoomPlugin = await import('chartjs-plugin-zoom');
+      ChartJS.register(zoomPlugin.default);
+    })();
+  }, []);
 
   // Estado para el rango de zoom. Inicialmente, el rango de vista completo.
   const [zoomRange, setZoomRange] = useState({ min: initialMin, max: initialMax });

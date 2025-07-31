@@ -45,10 +45,8 @@ export default function Navbar() {
 
         <nav className="flex flex-row w-auto max-w-none">
             <UserMenu />
-            <Link href={{ pathname: "/" }} legacyBehavior>
-            <a className="text-md lg:ml-auto lg:text-2xl text-white py-4 px-5 hover:bg-red-800">
+            <Link href={{ pathname: "/" }} className="text-md lg:ml-auto lg:text-2xl text-white py-4 px-5 hover:bg-red-800">
                 Home
-            </a>
             </Link>
         </nav>
         
@@ -80,10 +78,8 @@ export default function Navbar() {
                     </nav>
                     <nav className="flex flex-col w-full max-w-7xl justify-end items-center">
                         <UserMenu />
-                        <Link href={{ pathname: "/" }} legacyBehavior>
-                        <a className="w-full py-3 px-4 semibold hover:cursor-pointer hover:text-white hover:bg-red-900 ">
+                        <Link href={{ pathname: "/" }} className="w-full py-3 px-4 semibold hover:cursor-pointer hover:text-white hover:bg-red-900 ">
                             Home
-                        </a>
                         </Link>
                     </nav>
                 </div>

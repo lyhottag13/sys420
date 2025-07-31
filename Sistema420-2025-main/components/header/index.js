@@ -17,8 +17,8 @@ export default function Header() {
         <div>
           {
             
-            <Link href="/" legacyBehavior>
-              <a><img src="/images/cotoLogoHeader.png" alt="Coto Logo"/></a>
+            <Link href="/">
+              <img src="/images/cotoLogoHeader.png" alt="Coto Logo"/>
             </Link>
           }
         </div>
