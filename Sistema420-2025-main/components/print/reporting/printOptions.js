@@ -98,7 +98,9 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
   const printButtonHandler = (e) => {
     e.preventDefault();
     if (!options.include_summary && !options.include_charts && !options.include_raw_data) return;
-    if (!options.selected_tests.length) return;
+
+    // Breaks if the first selected test (which is a default null test) has no filename.
+    if (!options.selected_tests[0]?.filename) return;
 
     setPrePrinting(false);
     setPrinting(true);
@@ -108,7 +110,9 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
   const printExcelButtonHandler = (e) => {
     e.preventDefault();
     if (!options.include_summary && !options.include_charts && !options.include_raw_data) return;
-    // if (!options.selected_tests.length) return;
+
+    // Breaks if the first selected test (which is a default null test) has no filename.
+    if (!options.selected_tests[0]?.filename) return;
 
     setPrePrinting(false);
     let newOptions = { ...options };
