@@ -13,7 +13,6 @@ import { testsViewParameters } from "../../constants/index";
 import RightArrowIcon from "../svg/rightArrowIcon";
 import { useState, useEffect, useRef } from "react";
 import pattern from "patternomaly";
-import zoomPlugin from 'chartjs-plugin-zoom';
 
 ChartJS.register(
   CategoryScale,
@@ -23,8 +22,15 @@ ChartJS.register(
   Tooltip,
   Legend,
   annotationPlugin,
-  zoomPlugin
 );
+
+// Dynamically imports a CLIENT-ONLY import because otherwise the whole app can't build.
+useEffect(() => {
+  (async () => {
+    const zoomPlugin = await import('chartjs-plugin-zoom');
+    ChartJS.register(zoomPlugin.default);
+  })();
+}, []);
 
 /**
  * Rounds a number to a specified number of decimal places.
@@ -32,8 +38,8 @@ ChartJS.register(
  * @param {number} decimals - The number of decimal places to round to.
  * @returns {number} number The rounded number.
  */
-function roundDecimals(number, decimals){
-  const power = Math.pow(10,decimals);
+function roundDecimals(number, decimals) {
+  const power = Math.pow(10, decimals);
   return Math.round(number * power) / power;
 }
 
@@ -59,7 +65,7 @@ function getChartDataSet(testArray, testType, params, zoomRange) {
   const bin_size = parseFloat(testsViewParameters[testType].bin_size);
 
   // Calculate the mean
-  let nonNulltestArray = testArray.filter((v)=> v || v === 0)
+  let nonNulltestArray = testArray.filter((v) => v || v === 0)
   const sum = nonNulltestArray.reduce((a, b) => a + b);
   const mean = sum / nonNulltestArray.length;
 
@@ -73,9 +79,9 @@ function getChartDataSet(testArray, testType, params, zoomRange) {
    * @param {*} LSL - Lower specification limit
    * @param {number} cpk - Measures the capability of a process*/
 
-  const USL = max_pass? max_pass : Infinity;
+  const USL = max_pass ? max_pass : Infinity;
   const LSL = min_pass ? parseFloat(min_pass) : null;
-  const cpk = Math.min( (USL - mean)/(3 * sigma), (mean - LSL)/(3 * sigma) )
+  const cpk = Math.min((USL - mean) / (3 * sigma), (mean - LSL) / (3 * sigma))
 
   /**
    * Calculate the upper and lower control limits (UCPK and LCPK)
@@ -96,9 +102,9 @@ function getChartDataSet(testArray, testType, params, zoomRange) {
   const currentVisibleMin = zoomRange.min;
   const currentVisibleMax = zoomRange.max;
 
-  for(let value of testArray){
+  for (let value of testArray) {
     value = parseFloat(value);
-    let rounded_bin = Math.floor( value / bin_size ) * bin_size;
+    let rounded_bin = Math.floor(value / bin_size) * bin_size;
     let next_bin = rounded_bin + bin_size;
 
     // Lógica para el desglose dinámico del overflow/underflow
@@ -114,21 +120,21 @@ function getChartDataSet(testArray, testType, params, zoomRange) {
       else underflowObject[underflowX] = { value: 1, label: `<${roundDecimals(currentVisibleMin, 2)}` }; // Etiqueta dinámica
     } else {
       // Lógica existente para PASS/FAIL si el valor está dentro del rango visible
-      if ( rounded_bin <= min_pass && value >= min_pass ) {
-          rounded_bin = min_pass;
-          next_bin = Math.floor( ( min_pass + bin_size ) / bin_size ) * bin_size;
+      if (rounded_bin <= min_pass && value >= min_pass) {
+        rounded_bin = min_pass;
+        next_bin = Math.floor((min_pass + bin_size) / bin_size) * bin_size;
       }
-      else if ( next_bin >= max_pass && value <= max_pass ) {
-          next_bin = max_pass;
-          rounded_bin = Math.floor( ( max_pass - bin_size ) / bin_size ) * bin_size;
+      else if (next_bin >= max_pass && value <= max_pass) {
+        next_bin = max_pass;
+        rounded_bin = Math.floor((max_pass - bin_size) / bin_size) * bin_size;
       }
-      else if ( rounded_bin <= max_pass && value > max_pass ) {
-          rounded_bin = max_pass;
-          next_bin = Math.floor( ( max_pass + bin_size ) / bin_size ) * bin_size;
+      else if (rounded_bin <= max_pass && value > max_pass) {
+        rounded_bin = max_pass;
+        next_bin = Math.floor((max_pass + bin_size) / bin_size) * bin_size;
       }
-      else if ( next_bin >= min_pass && value < min_pass ) {
-          next_bin = min_pass;
-          rounded_bin = Math.floor( ( min_pass - bin_size ) / bin_size ) * bin_size;
+      else if (next_bin >= min_pass && value < min_pass) {
+        next_bin = min_pass;
+        rounded_bin = Math.floor((min_pass - bin_size) / bin_size) * bin_size;
       }
       if (rounded_bin < 0) rounded_bin = 0;
 
@@ -136,16 +142,16 @@ function getChartDataSet(testArray, testType, params, zoomRange) {
       rounded_bin = roundDecimals(rounded_bin, 4);
       next_bin = roundDecimals(next_bin, 4);
 
-      let average_bin = ( rounded_bin + next_bin ) / 2;
+      let average_bin = (rounded_bin + next_bin) / 2;
       let actual_label = `${rounded_bin} - ${next_bin}`;
 
-      if( rounded_bin < min_pass || next_bin > max_pass){
-          if(failObject[average_bin])  failObject[average_bin].value++;
-          else                        failObject[average_bin] = { value: 1, label: actual_label};
+      if (rounded_bin < min_pass || next_bin > max_pass) {
+        if (failObject[average_bin]) failObject[average_bin].value++;
+        else failObject[average_bin] = { value: 1, label: actual_label };
       }
       else {
-          if(passObject[average_bin])  passObject[average_bin].value++;
-          else                        passObject[average_bin] = { value: 1, label: actual_label};
+        if (passObject[average_bin]) passObject[average_bin].value++;
+        else passObject[average_bin] = { value: 1, label: actual_label };
       }
     }
   }
@@ -162,18 +168,18 @@ function getChartDataSet(testArray, testType, params, zoomRange) {
   for (let i in underflowObject) {
     underflow_array.push({ x: parseFloat(i), y: underflowObject[i].value, label: underflowObject[i].label });
   }
-  for(let i in passObject){
-    pass_array.push({ x: parseFloat(i), y: passObject[i].value, label: passObject[i].label});
+  for (let i in passObject) {
+    pass_array.push({ x: parseFloat(i), y: passObject[i].value, label: passObject[i].label });
 
-    if(passObject[i].value > max_frequency) max_frequency = passObject[i].value;
+    if (passObject[i].value > max_frequency) max_frequency = passObject[i].value;
   }
-  for(let i in failObject){
-    fail_array.push({ x: parseFloat(i), y: failObject[i].value, label: failObject[i].label});
+  for (let i in failObject) {
+    fail_array.push({ x: parseFloat(i), y: failObject[i].value, label: failObject[i].label });
 
-    if(failObject[i].value > max_frequency) max_frequency = failObject[i].value;
+    if (failObject[i].value > max_frequency) max_frequency = failObject[i].value;
   }
 
-  return { overflow_array, underflow_array ,name, pass_array, fail_array, step_size: bin_size, units: 'ohms', max_frequency: Math.ceil(max_frequency / 5) * 5, max_view, min_view, min_pass, max_pass, mean: roundDecimals(mean, 2), sigma: roundDecimals(sigma, 2), ucpk: roundDecimals(ucpk, 2), lcpk: roundDecimals(lcpk, 2) };
+  return { overflow_array, underflow_array, name, pass_array, fail_array, step_size: bin_size, units: 'ohms', max_frequency: Math.ceil(max_frequency / 5) * 5, max_view, min_view, min_pass, max_pass, mean: roundDecimals(mean, 2), sigma: roundDecimals(sigma, 2), ucpk: roundDecimals(ucpk, 2), lcpk: roundDecimals(lcpk, 2) };
 }
 
 
@@ -206,33 +212,33 @@ export default function TestHistogram({ params, printing, hideFails, testArray, 
     datasets: [
       ...(
         underflow_array.length > 0 ?
-        [{
-          stack: 1,
-          label: "UNDERFLOW",
-          data: underflow_array,
-          backgroundColor: 'rgba(100, 100, 255, 0.6)',
-          borderColor: 'rgba(0, 0, 0)',
-          borderWidth: 0.5,
-          categoryPercentage: 1,
-          barPercentage: 1,
-        }] : []
-      ),
-      ...(
-        hideFails?
-          []
-        :
-        [
-          {
+          [{
             stack: 1,
-            label: "FAIL",
-            data: fail_array,
-            backgroundColor: printing? pattern.draw('square','rgba(255, 99, 132, 1)') : 'rgba(255, 99, 132, 1)',
+            label: "UNDERFLOW",
+            data: underflow_array,
+            backgroundColor: 'rgba(100, 100, 255, 0.6)',
             borderColor: 'rgba(0, 0, 0)',
             borderWidth: 0.5,
             categoryPercentage: 1,
             barPercentage: 1,
-          }
-        ]
+          }] : []
+      ),
+      ...(
+        hideFails ?
+          []
+          :
+          [
+            {
+              stack: 1,
+              label: "FAIL",
+              data: fail_array,
+              backgroundColor: printing ? pattern.draw('square', 'rgba(255, 99, 132, 1)') : 'rgba(255, 99, 132, 1)',
+              borderColor: 'rgba(0, 0, 0)',
+              borderWidth: 0.5,
+              categoryPercentage: 1,
+              barPercentage: 1,
+            }
+          ]
       ),
       {
         stack: 1,
@@ -246,16 +252,16 @@ export default function TestHistogram({ params, printing, hideFails, testArray, 
       },
       ...(
         overflow_array.length > 0 ?
-        [{
-          stack: 1,
-          label: "OVERFLOW",
-          data: overflow_array,
-          backgroundColor: 'rgba(255, 165, 0, 0.6)',
-          borderColor: 'rgba(0, 0, 0)',
-          borderWidth: 0.5,
-          categoryPercentage: 1,
-          barPercentage: 1,
-        }] : []
+          [{
+            stack: 1,
+            label: "OVERFLOW",
+            data: overflow_array,
+            backgroundColor: 'rgba(255, 165, 0, 0.6)',
+            borderColor: 'rgba(0, 0, 0)',
+            borderWidth: 0.5,
+            categoryPercentage: 1,
+            barPercentage: 1,
+          }] : []
       ),
     ],
   };
@@ -274,14 +280,14 @@ export default function TestHistogram({ params, printing, hideFails, testArray, 
         ticks: {
           step_size,
           font: {
-            size: printing? 17 : 12,
+            size: printing ? 17 : 12,
           },
         },
         title: {
           display: true,
           text: units,
           font: {
-            size: printing? 22 : 12,
+            size: printing ? 22 : 12,
           },
         },
         // Los límites del eje X están controlados por el estado zoomRange
@@ -295,12 +301,12 @@ export default function TestHistogram({ params, printing, hideFails, testArray, 
           display: true,
           text: 'Frequency',
           font: {
-            size: printing? 22 : 12,
+            size: printing ? 22 : 12,
           },
         },
         ticks: {
           font: {
-            size: printing? 17 : 12,
+            size: printing ? 17 : 12,
           },
         },
       }
@@ -308,7 +314,7 @@ export default function TestHistogram({ params, printing, hideFails, testArray, 
     plugins: {
       tooltip: {
         callbacks: {
-          title: (items) => ( items[0].raw.label )
+          title: (items) => (items[0].raw.label)
         }
       },
       legend: {
@@ -327,7 +333,7 @@ export default function TestHistogram({ params, printing, hideFails, testArray, 
               content: 'MIN',
               enabled: true,
               color: 'rgb(255,255,255)',
-              backgroundColor : 'rgb(125, 125, 125)',
+              backgroundColor: 'rgb(125, 125, 125)',
               position: 'start'
             }
           },
@@ -342,7 +348,7 @@ export default function TestHistogram({ params, printing, hideFails, testArray, 
               content: 'MAX',
               enabled: true,
               color: 'rgb(255,255,255)',
-              backgroundColor : 'rgb(125, 125, 125)',
+              backgroundColor: 'rgb(125, 125, 125)',
               position: 'start'
             }
           },
@@ -353,9 +359,9 @@ export default function TestHistogram({ params, printing, hideFails, testArray, 
           enabled: true, // El pan sigue habilitado
           mode: 'x',    // Solo en el eje X
           modifierKey: null, // Sin tecla modificadora para el arrastre normal
-          onPanComplete: ({chart}) => {
+          onPanComplete: ({ chart }) => {
             const xScale = chart.scales.x;
-            setZoomRange({min: xScale.min, max: xScale.max});
+            setZoomRange({ min: xScale.min, max: xScale.max });
           },
         },
         zoom: {
@@ -369,9 +375,9 @@ export default function TestHistogram({ params, printing, hideFails, testArray, 
             enabled: false, // Asegúrate de que el zoom por arrastre (drag) esté deshabilitado si quieres que el arrastre sea solo para pan
           },
           mode: 'x', // El zoom también será solo en el eje X
-          onZoomComplete: ({chart}) => { // Callback al finalizar el zoom
+          onZoomComplete: ({ chart }) => { // Callback al finalizar el zoom
             const xScale = chart.scales.x;
-            setZoomRange({min: xScale.min, max: xScale.max});
+            setZoomRange({ min: xScale.min, max: xScale.max });
           },
         }
       }
@@ -381,7 +387,7 @@ export default function TestHistogram({ params, printing, hideFails, testArray, 
   const resetView = (e) => {
     e.preventDefault();
 
-    if(chartRef.current){
+    if (chartRef.current) {
       chartRef.current.resetZoom();
       // También resetea el estado de zoomRange a los valores iniciales
       // para que el UI refleje el reset y getChartDataSet se re-calcule.
@@ -390,10 +396,10 @@ export default function TestHistogram({ params, printing, hideFails, testArray, 
   }
 
   return (
-    <div className={printing? 'w-full text-center' : 'w-full text-center max-w-lg flex flex-col'}>
+    <div className={printing ? 'w-full text-center' : 'w-full text-center max-w-lg flex flex-col'}>
       <h1 className="text-md">{name}</h1>
       {/* Pasa la referencia al componente Bar */}
-      <Bar ref={chartRef} test_type={name} data={data} options={options} mean={mean} sigma={sigma} ucpk={ucpk} lcpk={lcpk}/>
+      <Bar ref={chartRef} test_type={name} data={data} options={options} mean={mean} sigma={sigma} ucpk={ucpk} lcpk={lcpk} />
       <div className="flex flex-col gap-y-2 items-center ml-12 mr-2">
         <div className="flex flex-row w-full px-5 justify-center">
           <button onClick={resetView} className="bg-blue-300 rounded-lg px-2 hover:bg-blue-800 transform hover:scale-105 text-white" >
