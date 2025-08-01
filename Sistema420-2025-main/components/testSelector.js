@@ -27,8 +27,9 @@ export default function TestSelector() {
     toggleTestSelection(selected);
   }
   useEffect(() => {
-    selectAll();
-  }, [])
+    // Requires a requestAnimationFrame because states in the selectAll method require everything to be painted.
+    requestAnimationFrame(selectAll);
+  }, []);
   // Filtra las opciones según el inputValue
   const filteredOptions = currentSearch.tests.filter(
     (test) =>

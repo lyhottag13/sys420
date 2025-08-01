@@ -87,7 +87,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
     non_selected_tests: [],
     include_summary: true,
     include_charts: true,
-    include_raw_data: true,
+    include_raw_data: false,
     include_fails: true,
     excel_format: false,
     // highlighted_tests_type:[] // guarda arreglos de test seleccionados para impresion de pdf
