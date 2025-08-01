@@ -137,7 +137,6 @@ const GeneratePdf = ({ testsArray, totals }) => {
       // Affects the worksheet name. Dynamically adds 'Tests' instead of 'Test' if multiple tests exist.
       const worksheet = workbook.addWorksheet(`Test${test.filename.includes(',') ? 's' : ''} ${test.filename}`);
 
-      // Agrega encabezados (una sola fi       const worksheet = workbook.addWorksheet(`Test ${test.id}`);
       const [newHeaders] = headers;
 
       worksheet.addRow(newHeaders);
@@ -154,7 +153,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
 
-    saveAs(blob, `${options.selected_tests[0].filename}.xlsx`);
+    saveAs(blob, `${shortenFilenames(options.selected_tests[0])}.xlsx`);
   }
 
   //Generates a PDF report with selected tests and options.
@@ -181,6 +180,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
 
     // Creates a final page with all the filenames summarized neatly.
     doc.addPage();
+    doc.setFontSize(12);
     addHeader(doc, singleTest);
     doc.setFont(undefined, 'bold');
     doc.setFontSize(20);
@@ -190,7 +190,7 @@ const GeneratePdf = ({ testsArray, totals }) => {
     for (let i = 0; i < filenames.length; i++) {
       addCenteredTextOnRow(doc, filenames[i], 6 + i);
     }
-    doc.save(singleTest.filename);
+    doc.save(shortenFilenames(singleTest));
     /* 
       Sends the user back to the filter page after printing since the app gets stuck 
       loading otherwise. However, this only happens when the test to be printed 
@@ -279,13 +279,23 @@ const GeneratePdf = ({ testsArray, totals }) => {
     const dateParts = test.start_datetime.slice(0, 10).split('-'); // Assumes the format is 'YYYY-MM-DD'
     const formattedDate = `${dateParts[1]}-${dateParts[2]}-${dateParts[0]}`;
 
-
+    const filenameInHeader = shortenFilenames(test);
     addTextOnRow(doc, `Vers 1.0`, 0, 140);                          //System 420 Version
     addTextOnRow(doc, `${test.type_of_test}`, 0, 230);             //type_of_test
     addTextOnRow(doc, `${test.pn}\n${test.application}\n${test.revision}`, 1, 73);
     addTextOnRow(doc, `${test.plt}\n${test.lot_number}\n${test.datecode}`, 1, 250);
-    addTextOnRow(doc, `${test.filename.split(',')[0]}\n${formattedDate}\n${test.start_datetime.slice(11, 19)}`, 1, 485);
+    addTextOnRow(doc, `${filenameInHeader}\n${formattedDate}\n${test.start_datetime.slice(11, 19)}`, 1, 485);
     doc.line(22.6, 90, 586.7, 90);
+  }
+
+  function shortenFilenames(test) {
+    const filenames = test.filename.split(', ');
+    let filenameInHeader = filenames[0];
+    // Adds the little blurb afterwards if there are additional filenames.
+    if (filenames.length > 1) {
+      filenameInHeader += ` & ${filenames.length - 1} More`;
+    }
+    return filenameInHeader;
   }
 
   /**
