@@ -51,7 +51,6 @@ export default function Home() {
       <Head>
         <title>420 System</title>
         <link rel="icon" href="/icon.ico" />
-        <link rel="stylesheet" href="./tailwind.css" />
       </Head>
 
       <Header/>

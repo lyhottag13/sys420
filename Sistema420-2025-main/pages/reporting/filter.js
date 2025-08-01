@@ -76,7 +76,6 @@ export default function Filter() {
       <Head>
         <title>SYSTEM 420 - Filter</title>
         <link rel="icon" href="/icon.ico" />
-        <link rel="stylesheet" href="../tailwind.css" />
       </Head>
 
       <Header />

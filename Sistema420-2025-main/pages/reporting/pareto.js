@@ -129,7 +129,6 @@ export default function Pareto() {
       <Head>
         <title>SYSTEM 420 - Pareto</title>
         <link rel="icon" href="/icon.ico" />
-        <link rel="stylesheet" href="../tailwind.css" />
       </Head>
 
       <Header />

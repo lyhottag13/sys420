@@ -164,25 +164,33 @@ const GeneratePdf = ({ testsArray, totals }) => {
       format: "letter",
     });
     doc.setFontSize(12);
+    const singleTest = options.selected_tests[0];
+    if (options.include_summary) {
+      addTestSummary(doc, paretoChartRef.current.children[0].children[0], singleTest);
 
-    for (let i in options.selected_tests) {
-      if (options.include_summary) {
-        addTestSummary(doc, paretoChartRef.current.children[i].children[0], options.selected_tests[i]);
-
-        if (options.include_charts || options.include_raw_data) doc.addPage();
-      }
-      if (options.include_charts) {
-
-        addHistograms(doc, histogramsContainerRef.current.children[i].children[0], options.selected_tests[i], options.highlighted_test_types);
-        if (options.include_raw_data) doc.addPage();
-      }
-      if (options.include_raw_data) {
-        addRawData(doc, options.selected_tests[i]);
-      }
-
-      if (i < options.selected_tests.length - 1) doc.addPage();
+      if (options.include_charts || options.include_raw_data) doc.addPage();
     }
-    doc.save(options.selected_tests[0].filename);
+    if (options.include_charts) {
+
+      addHistograms(doc, histogramsContainerRef.current.children[0].children[0], singleTest, options.highlighted_test_types);
+      if (options.include_raw_data) doc.addPage();
+    }
+    if (options.include_raw_data) {
+      addRawData(doc, singleTest);
+    }
+
+    // Creates a final page with all the filenames summarized neatly.
+    doc.addPage();
+    addHeader(doc, singleTest);
+    doc.setFont(undefined, 'bold');
+    doc.setFontSize(20);
+    addCenteredTextOnRow(doc, 'FILENAMES:', 5);
+    doc.setFont(undefined, 'normal');
+    const filenames = singleTest.filename.split(', ');
+    for (let i = 0; i < filenames.length; i++) {
+      addCenteredTextOnRow(doc, filenames[i], 6 + i);
+    }
+    doc.save(singleTest.filename);
     /* 
       Sends the user back to the filter page after printing since the app gets stuck 
       loading otherwise. However, this only happens when the test to be printed 
