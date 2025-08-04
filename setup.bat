@@ -9,6 +9,9 @@ CALL npm.cmd ci
 echo Generating Prisma...
 CALL npx prisma db pull --force
 CALL npx prisma generate
+:: Pre-builds the tailwind CSS to force the stylesheet to load.
+echo Pre-building tailwindCSS...
+CALL npx tailwindcss -i ./styles/index.css -o ./public/tailwind.css
 :: Builds the app for use in production.
 CALL npm run build
 :: Adds the app daemon to pm2.
