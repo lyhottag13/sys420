@@ -100,7 +100,7 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
     if (!options.include_summary && !options.include_charts && !options.include_raw_data) return;
 
     // Breaks if the first selected test (which is a default null test) has no filename.
-    if (!options.selected_tests[0]?.filename) return;
+    if (!options.selected_tests?.filename) return;
 
     setPrePrinting(false);
     setPrinting(true);
@@ -112,7 +112,7 @@ export default function PrintOptions({ setPrePrinting, setPrinting, isUnique, op
     if (!options.include_summary && !options.include_charts && !options.include_raw_data) return;
 
     // Breaks if the first selected test (which is a default null test) has no filename.
-    if (!options.selected_tests[0]?.filename) return;
+    if (!options.selected_tests?.filename) return;
 
     setPrePrinting(false);
     let newOptions = { ...options };

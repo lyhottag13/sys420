@@ -12,7 +12,7 @@ CALL npx prisma generate
 :: Builds the app for use in production.
 CALL npm run build
 :: Adds the app daemon to pm2.
-set /p newport=What's the desired localhost port?
+set /p newport=What's the desired localhost port? 
 echo Generating web.config and adding process to pm2...
 echo ^<?xml version="1.0" encoding="UTF-8"?^> > web.config
 echo ^<configuration^> >> web.config
@@ -29,3 +29,4 @@ echo  ^</system.webServer^> >> web.config
 echo ^</configuration^> >> web.config
 CALL pm2 delete sys420
 CALL pm2 start node_modules/next/dist/bin/next --name "sys420" -- start -p !newport!
+CALL pm2 save

@@ -27,13 +27,9 @@ export const TestsProvider = props => {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log(await response);
             var json = await response.json();
-            console.log(json);
 
             // Processes the fetched tests data before updating the state.
-            // json = json.map((t) => ({...t, idle_time: new Date(0).toLocaleString(), test_time: new Date(0).toLocaleString(), elapsed_time: (t.end_datetime - t.start_datetime).toLocaleString()
-            // }));
             json = json.map((t) => ({...t, idle_time: (t.idle_time).toLocaleString(), test_time: (t.test_time).toLocaleString(), elapsed_time: (t.elapsed_time).toLocaleString()
             }));
 

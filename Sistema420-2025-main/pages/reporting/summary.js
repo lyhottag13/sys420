@@ -43,17 +43,12 @@ export default function Summary() {
   // const { currentSearch: { selectedTests = [] } } = useTestsStore();
   // Map selected IDs to test objects
   const selectedTestObjects = currentSearch.selectedTests ?? [];
-  console.log(selectedTestObjects);
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const [year, month, day] = dateString.split('-');
     return `${month}-${day}-${year}`;
   };
 
-  // If no tests are selected, show NotFound
-  // if (!selectedTestObjects || selectedTestObjects.length === 0)
-  //   return <NotFound />;
-  console.log(selectedTestObjects);
   const totalRelaysTested = selectedTestObjects.reduce(
     (acc, test) => acc + Number(test.relays_tested || 0),
     0
