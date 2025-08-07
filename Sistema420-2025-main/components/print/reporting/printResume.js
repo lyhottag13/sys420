@@ -396,6 +396,7 @@ function addTestSummary(doc, paretoChart, test) {
  * @param {Object} test - The test object containing the raw data to be added to the PDF.
 */
 function addRawData(doc, test) {
+  doc.setFontSize(12);
   addHeader(doc, test);
 
   const { headers, data } = getRawDataTable(test);
@@ -516,7 +517,9 @@ function addHistograms(doc, container, test, test_seleccionados) {
     y += fontSize;
     insertHistogramCanvas(switchContainer);
 
-    if (y > maxChartHeight) {
+    // We need a this check to prevent an extra page from being printed when the final graph printed is the last graph on the page.
+    const isLastItem = switchContainer === container.children.item(container.children.length - 1);
+    if (y > maxChartHeight && !isLastItem) {
       // Adds a new page and resets the chart y and x positions so there is no chart overlap.
       y = initialY;
       xIteration = 0;
