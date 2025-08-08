@@ -57,9 +57,7 @@ Project is created with:
 	
 ## Setup
 
-To run this project in development mode, click the setup.bat file in the root directory.
-
-Currently, there is no support for a buildable instance.
+Currently, there is support for a buildable instance. Simply run the setup.bat in the root directory and follow the instructions.
 
 ---
 
@@ -70,6 +68,7 @@ Manuel Rodriguez - *Data Developer* :clap: <br>
 Eva Real - *Web Developer* :raising_hand: <br>
 Oscar Rosete - *Integrations Manager* :memo: <br>
 Alvaro Moreno - *DevTeam Manager* :briefcase: <br>
+Leonardo Hotta-Guzman - *Patcher* :nerd_face: <br>
 
 ---
 
