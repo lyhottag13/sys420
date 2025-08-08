@@ -28,15 +28,18 @@ export default function TestSelector() {
     // Updates the scroll after the window has finishedu updating, so that the scroll isn't cancelled.
     requestAnimationFrame(() => scrollRef.current.scrollTop = currentScroll);
   };
-  // Selects every test initially since the user usually uses all the tests selected.
-  const selectAll = () => {
-    const selected = currentSearch.tests;
-    toggleTestSelection(selected);
-  }
-  useEffect(() => {
-    // Requires a requestAnimationFrame because states in the selectAll method require everything to be painted.
-    requestAnimationFrame(selectAll);
-  }, []);
+
+  // UNCOMMENT THIS TO SELECT ALL TESTS AFTER A SEARCH.
+  //   // Selects every test initially since the user usually uses all the tests selected.
+  // const selectAll = () => {
+  //   const selected = currentSearch.tests;
+  //   toggleTestSelection(selected);
+  // }
+  // useEffect(() => {
+  //   // Requires a requestAnimationFrame because states in the selectAll method require everything to be painted.
+  //   requestAnimationFrame(selectAll);
+  // }, []);
+
   // Filtra las opciones según el inputValue
   const filteredOptions = currentSearch.tests.filter(
     (test) =>
