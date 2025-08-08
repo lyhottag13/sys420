@@ -128,7 +128,7 @@ export default function Filter() {
             </div>
             <div className="flex flex-col items-left mb-7">
               <label className="block text-black text-lg" htmlFor="pltNumber">PLT Number</label>
-              <input id="pltNumber" name="pltNumber" onChange={(e) => { setParams({ ...params, plt: e.target.value }) }} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="number" placeholder="0" />
+              <input id="pltNumber" name="pltNumber" onChange={(e) => { setParams({ ...params, plt: e.target.value }) }} className="border-b border-black focus:border-blue-500 text-lg bg-transparent w-full text-gray-700 py-1 leading-tight focus:outline-none" type="text" placeholder="0" />
             </div>
             <div className="flex flex-col items-left mb-7">
               <label className="block text-black text-lg" htmlFor="yield">Yield</label>

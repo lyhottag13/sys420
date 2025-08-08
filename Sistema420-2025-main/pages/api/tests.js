@@ -38,6 +38,11 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'At least one filter parameter is required.' });
       }
 
+      const dateObject = new Date(start_datetime2);
+      const dateUtc = dateObject.getUTCDate();
+      dateObject.setUTCDate(dateUtc + 1);
+      const updated_start_datetime2 = dateObject.toISOString().slice(0, 10);
+
       const filenameList = filename ? filename.split(',') : [];
       console.log(filenameList);
       // Construct dynamic query based on provided filters
@@ -47,7 +52,7 @@ export default async function handler(req, res) {
             pn ? { pn } : {},
             application ? { application } : {},
             plt ? { plt } : {},
-            start_datetime1 || start_datetime2 ? { start_datetime: { ...(start_datetime1 ? { gte: new Date(start_datetime1) } : {}), ...(start_datetime2 ? { lte: new Date(start_datetime2) } : {}) } } : {},
+            start_datetime1 || start_datetime2 ? { start_datetime: { ...(start_datetime1 ? { gte: new Date(start_datetime1) } : {}), ...(start_datetime2 ? { lte: new Date(updated_start_datetime2) } : {}) } } : {},
             yield1 || yield2 ? { yield: { ...(yield1 ? { gte: yield1 } : {}), ...(yield2 ? { lte: yield2 } : {}) } } : {}
           ].filter(Boolean)
         },

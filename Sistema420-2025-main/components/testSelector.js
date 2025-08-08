@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useTestsStore } from "../store/testsContext";
 import {
   Checkbox,
@@ -8,18 +8,25 @@ import {
 import Autocomplete from "@mui/material/Autocomplete";
 
 export default function TestSelector() {
+  const scrollRef = React.useRef(null);
   const { currentSearch, toggleTestSelection } = useTestsStore();
   const [inputValue, setInputValue] = useState("");
   if (!currentSearch.tests || currentSearch.tests.length === 0) {
     return <p>No tests available</p>;
   }
 
-  const handleChange = (event, newSelected) => {
+  const handleChange = (_, newSelected) => {
+    // Saves the current scroll to prevent the list from jumping to the start.
+    const currentScroll = scrollRef.current?.scrollTop;
+
     // Siempre usa los objetos originales
     const selected = currentSearch.tests.filter(test =>
       newSelected.some(sel => sel.id === test.id)
     );
     toggleTestSelection(selected);
+
+    // Updates the scroll after the window has finishedu updating, so that the scroll isn't cancelled.
+    requestAnimationFrame(() => scrollRef.current.scrollTop = currentScroll);
   };
   // Selects every test initially since the user usually uses all the tests selected.
   const selectAll = () => {
@@ -75,6 +82,7 @@ export default function TestSelector() {
           </Paper>
         )}
         ListboxProps={{
+          ref: scrollRef,
           style: {
             maxHeight: 220, // Limita la altura de la lista de opciones (con scroll)
           },
